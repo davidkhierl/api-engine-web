@@ -1,5 +1,5 @@
 import { LoginForm } from '@/components/forms/login-form'
-import { BaseButton } from '@/components/ui/base-button'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 
@@ -15,9 +15,9 @@ export default function RegisterPage() {
           <LoginForm />
         </CardContent>
       </Card>
-      <BaseButton asChild variant="link">
+      <Button asChild variant="link">
         <Link href="/login">Already have an account?</Link>
-      </BaseButton>
+      </Button>
     </main>
   )
 }

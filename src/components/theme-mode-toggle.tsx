@@ -1,6 +1,6 @@
 'use client'
 
-import { BaseButton, BaseButtonProps } from '@/components/ui/base-button'
+import { Button, ButtonProps } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,29 +11,29 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import * as React from 'react'
 
-export type ThemeModeToggleProps = Omit<BaseButtonProps, 'asChild' | 'children' | 'size'>
+export type ThemeModeToggleProps = Omit<ButtonProps, 'asChild' | 'children' | 'size'>
 
-export const ThemeModeToggle = React.forwardRef<HTMLButtonElement, ThemeModeToggleProps>(
-  (props, ref) => {
-    const { setTheme } = useTheme()
+const ThemeModeToggle = React.forwardRef<HTMLButtonElement, ThemeModeToggleProps>((props, ref) => {
+  const { setTheme } = useTheme()
 
-    return (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <BaseButton ref={ref} size="icon" {...props}>
-            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </BaseButton>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    )
-  }
-)
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button ref={ref} size="icon" {...props}>
+          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme('light')}>Light</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('dark')}>Dark</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme('system')}>System</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+})
 
 ThemeModeToggle.displayName = 'ThemeModeToggle'
+
+export { ThemeModeToggle }

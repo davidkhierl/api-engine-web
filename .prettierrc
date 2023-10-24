@@ -9,5 +9,6 @@
   "singleQuote": true,
   "tabWidth": 2,
   "useTabs": false,
-  "bracketSameLine": true
+  "bracketSameLine": true,
+  "tailwindFunctions": ["cva"]
 }

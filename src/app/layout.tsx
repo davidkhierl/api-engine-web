@@ -14,7 +14,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <div className="bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50">
+            {children}
+          </div>
+        </AppProviders>
       </body>
     </html>
   )
