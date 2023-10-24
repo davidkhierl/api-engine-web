@@ -69,6 +69,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           buttonVariants({ variant, size, className }),
           iconPlacement === 'right' && 'flex-row-reverse'
         )}
+        disabled={isLoading}
         {...props}>
         <Slottable child={children}>
           {(child) => (
