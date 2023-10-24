@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00fd5b0f-2e77-4f42-b1f1-1c354b1bbf30" name="Changes" comment="initial buttons component">
+    <list default="true" id="00fd5b0f-2e77-4f42-b1f1-1c354b1bbf30" name="Changes" comment="remove button state">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +97,7 @@
       <workItem from="1698004574101" duration="153000" />
       <workItem from="1698128177797" duration="11329000" />
       <workItem from="1698161300293" duration="2705000" />
-      <workItem from="1698165646215" duration="3461000" />
+      <workItem from="1698165646215" duration="3628000" />
     </task>
     <task id="LOCAL-00001" summary="wip: login-form.tsx">
       <option name="closed" value="true" />
@@ -115,7 +115,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698169441332</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="remove button state">
+      <option name="closed" value="true" />
+      <created>1698169475781</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1698169475781</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -135,6 +143,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="wip: login-form.tsx" />
     <MESSAGE value="initial buttons component" />
-    <option name="LAST_COMMIT_MESSAGE" value="initial buttons component" />
+    <MESSAGE value="remove button state" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove button state" />
   </component>
 </project>
