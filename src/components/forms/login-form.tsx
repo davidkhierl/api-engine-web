@@ -1,5 +1,4 @@
 'use client'
-import { loginAction } from '@/app/login/actions'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -8,11 +7,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormServerErrorMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
-// @ts-ignore
-import { experimental_useFormStatus as useFormStatus } from 'react-dom'
+
+import { ApiEngineError } from '@/lib/api-engine-error'
+import { ae } from '@/services/ae'
+import dayjs from 'dayjs'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -24,34 +26,32 @@ const formSchema = z.object({
 export function LoginForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+    defaultValues: { email: '', password: '' },
   })
 
-  // async function onSubmit(values: z.infer<typeof formSchema>) {
-  //   const data = await api.post<
-  //     z.infer<typeof formSchema>,
-  //     { access_token: string; at_expiry: number }
-  //   >('/auth/login', values)
-  //
-  //   if (data) {
-  //     localStorage.setItem('access_token', data.access_token)
-  //     localStorage.setItem('at_expiry', dayjs(data.at_expiry * 1000).toISOString())
-  //   }
-  // }
-
-  const callAction = async (formData: FormData) => {
-    const isValid = await form.trigger()
-    if (!isValid) return
-    const data = await loginAction(formData)
-    console.log(data)
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const token = await ae.login(values)
+      localStorage.setItem('access_token', token.access_token)
+      localStorage.setItem('at_expiry', dayjs(token.at_expiry * 1000).toISOString())
+    } catch (error) {
+      if (error instanceof ApiEngineError) {
+        form.setError('root.serverError', {
+          type: error.statusCode.toString(),
+          message: error.message,
+        })
+      } else if (error instanceof Error) {
+        form.setError('root.serverError', {
+          type: 'manual',
+          message: error.message,
+        })
+      }
+    }
   }
 
   return (
     <Form {...form}>
-      <form action={callAction} className="space-y-4">
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           name="email"
           control={form.control}
@@ -78,20 +78,11 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        {/*<Button type="submit" disabled={form.formState.isSubmitting}>*/}
-        {/*  Login*/}
-        {/*</Button>*/}
-        <LoginButton />
+        <FormServerErrorMessage />
+        <Button type="submit" disabled={form.formState.isSubmitting}>
+          Login
+        </Button>
       </form>
     </Form>
-  )
-}
-
-function LoginButton() {
-  const { pending } = useFormStatus()
-  return (
-    <Button type="submit" isLoading={pending}>
-      Login
-    </Button>
   )
 }

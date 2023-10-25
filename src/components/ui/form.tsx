@@ -154,6 +154,25 @@ const FormMessage = React.forwardRef<
 })
 FormMessage.displayName = 'FormMessage'
 
+const FormServerErrorMessage = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => {
+  const { formState } = useFormContext()
+
+  if (!formState.errors.root?.serverError) return null
+
+  return (
+    <p
+      ref={ref}
+      className={cn('text-sm font-medium text-red-500 dark:text-red-900', className)}
+      {...props}>
+      {formState.errors.root.serverError.message}
+    </p>
+  )
+})
+FormServerErrorMessage.displayName = 'FormServerErrorMessage'
+
 export {
   Form,
   FormControl,
@@ -162,5 +181,6 @@ export {
   FormItem,
   FormLabel,
   FormMessage,
+  FormServerErrorMessage,
   useFormField,
 }

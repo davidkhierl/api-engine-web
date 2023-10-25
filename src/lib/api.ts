@@ -1,30 +1,11 @@
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
-export interface ApiFetchConfig<T extends {}> {
-  path: string
-  data?: T
-  init?: Omit<RequestInit, 'body'>
-}
+type ApiFetchOperation = (
+  path: string,
+  config?: Omit<RequestInit, 'method' | 'body'>
+) => Promise<Response>
 
-async function apiFetch<T extends {}, D = unknown>({
-  path,
-  init = {},
-  data,
-}: ApiFetchConfig<T>): Promise<Response> {
-  const { method, headers, ...rest } = init
-
-  return await fetch(`http://localhost:4000${path}`, {
-    method: method ?? 'GET',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      ...headers,
-    },
-    credentials: 'include',
-    body: new URLSearchParams(data),
-    ...rest,
-  })
-}
-type ApiFetchOperation = <T extends {}, D = unknown>(
+type ApiFetchOperationWithData = <T extends {}, D = any>(
   path: string,
   data?: T,
   config?: Omit<RequestInit, 'method' | 'body'>
@@ -32,16 +13,50 @@ type ApiFetchOperation = <T extends {}, D = unknown>(
 
 interface ApiOperations {
   get: ApiFetchOperation
-  post: ApiFetchOperation
-  put: ApiFetchOperation
-  patch: ApiFetchOperation
-  delete: ApiFetchOperation
+  post: ApiFetchOperationWithData
+  put: ApiFetchOperationWithData
+  patch: ApiFetchOperationWithData
+  delete: ApiFetchOperationWithData
 }
 
-export const api: ApiOperations = {
-  get: (path, data, config) => apiFetch({ path, data, init: { method: 'GET', ...config } }),
+export type ApiInitConfig = Omit<RequestInit, 'body'>
+
+export interface ApiFetchConfig<T extends {}> {
+  path: string
+  data?: T
+  init?: ApiInitConfig & { method: ApiMethod }
+}
+
+async function apiFetch<T extends {}, D = any>({
+  path,
+  init = { method: 'GET' },
+  data,
+}: ApiFetchConfig<T>): Promise<Response> {
+  const reqHeaders = new Headers(init.headers)
+  reqHeaders.set('Content-Type', 'application/x-www-form-urlencoded')
+
+  if (typeof window !== undefined) {
+    const accessToken = localStorage.getItem('access_token')
+    if (accessToken) {
+      reqHeaders.set('Authorization', `Bearer ${accessToken}`)
+    }
+  }
+
+  init.headers = reqHeaders
+
+  return await fetch(path, {
+    credentials: 'include',
+    body: init?.method !== 'GET' ? new URLSearchParams(data) : undefined,
+    ...init,
+  })
+}
+
+const api: ApiOperations = {
+  get: (path, config) => apiFetch({ path, init: { method: 'GET', ...config } }),
   post: (path, data, config) => apiFetch({ path, data, init: { method: 'POST', ...config } }),
   put: (path, data, config) => apiFetch({ path, data, init: { method: 'PUT', ...config } }),
   patch: (path, data, config) => apiFetch({ path, data, init: { method: 'PATCH', ...config } }),
   delete: (path, data, config) => apiFetch({ path, data, init: { method: 'DELETE', ...config } }),
 }
+
+export { api }
