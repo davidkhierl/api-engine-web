@@ -1,6 +1,6 @@
 import { Slot, Slottable } from '@/components/primitives/slot'
 import { Icon } from '@/components/ui/icon'
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/utils/cn'
 import { type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import { buttonVariants } from './button'

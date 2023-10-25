@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
+// @ts-ignore
 import { experimental_useFormStatus as useFormStatus } from 'react-dom'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'

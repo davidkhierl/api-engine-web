@@ -8,6 +8,10 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'API Engine',
   description: 'Easily manage your api keys',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#020617' },
+    { media: '(prefers-color-scheme: dark)', color: '#020617' },
+  ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
