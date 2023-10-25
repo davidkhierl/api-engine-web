@@ -176,7 +176,7 @@ FormServerErrorMessage.displayName = 'FormServerErrorMessage'
 
 const FormInput = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => {
   const { error } = useFormField()
-  console.log(error)
+
   return (
     <Input
       ref={ref}
