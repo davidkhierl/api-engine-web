@@ -10,6 +10,7 @@ import {
   useFormContext,
 } from 'react-hook-form'
 
+import { Input, InputProps } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils/cn'
 
@@ -173,11 +174,25 @@ const FormServerErrorMessage = React.forwardRef<
 })
 FormServerErrorMessage.displayName = 'FormServerErrorMessage'
 
+const FormInput = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => {
+  const { error } = useFormField()
+  console.log(error)
+  return (
+    <Input
+      ref={ref}
+      className={cn(error && 'border-red-500 dark:border-red-900', className)}
+      {...props}
+    />
+  )
+})
+FormInput.displayName = 'FormInput'
+
 export {
   Form,
   FormControl,
   FormDescription,
   FormField,
+  FormInput,
   FormItem,
   FormLabel,
   FormMessage,

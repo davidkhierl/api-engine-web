@@ -4,12 +4,12 @@ import {
   Form,
   FormControl,
   FormField,
+  FormInput,
   FormItem,
   FormLabel,
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { ApiEngineError } from '@/lib/api-engine-error'
@@ -59,7 +59,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="email" {...field} />
+                <FormInput type="email" placeholder="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -72,7 +72,7 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="password" {...field} />
+                <FormInput type="password" placeholder="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
