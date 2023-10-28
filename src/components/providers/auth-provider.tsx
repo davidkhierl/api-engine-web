@@ -2,8 +2,7 @@
 
 import { AuthContext, AuthContextType } from '@/contexts/auth-context'
 import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
-import { apiEngine } from '@/services/api-engine'
-import { User } from '@/types/api.types'
+import { User } from '@/lib/api-engine/api.types'
 import * as React from 'react'
 import { StoreApi, createStore } from 'zustand'
 
@@ -16,9 +15,9 @@ export function AuthProvider({ children, user }: { children?: React.ReactNode; u
       isAuthenticating: false,
       async authenticate(errorCallback) {
         try {
-          set({ isAuthenticating: true })
-          const user = await apiEngine.currentUser()
-          set({ user, isAuthenticating: false })
+          // set({ isAuthenticating: true })
+          // const user = await apiEngine.currentUser()
+          // set({ user, isAuthenticating: false })
         } catch (error) {
           set({ isAuthenticating: false })
           if (error instanceof ApiEngineError) {

@@ -1,5 +1,5 @@
 import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
-import { User } from '@/types/api.types'
+import { User } from '@/lib/api-engine/api.types'
 import * as React from 'react'
 import { StoreApi } from 'zustand'
 

@@ -5,13 +5,15 @@ enum ApiEngineBaseEndpoints {
 }
 
 export class ApiEngineEndpoints {
-  readonly baseUrl = process.env.NEXT_PUBLIC_API_URL!
-  constructor() {
-    if (!process.env.NEXT_PUBLIC_API_URL)
-      throw Error('Missing environment variable: NEXT_PUBLIC_API_ENDPOINT')
-  }
+  public static readonly LOGIN = `${ApiEngineEndpoints.getBaseUrl}/${ApiEngineBaseEndpoints.LOGIN}`
 
-  readonly Login = `${this.baseUrl}/${ApiEngineBaseEndpoints.LOGIN}`
-  readonly RefreshToken = `${this.baseUrl}/${ApiEngineBaseEndpoints.REFRESH_TOKEN}`
-  readonly CurrentUser = `${this.baseUrl}/${ApiEngineBaseEndpoints.CURRENT_USER}`
+  public static getBaseUrl() {
+    if (process.env.NODE_ENV === 'development') {
+      if (!process.env.NEXT_PUBLIC_URL)
+        throw Error('Missing environment variable: NEXT_PUBLIC_API_ENDPOINT')
+      return `${process.env.NEXT_PUBLIC_URL}`
+    }
+
+    return `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  }
 }
