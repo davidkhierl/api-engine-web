@@ -1,4 +1,5 @@
 'use client'
+
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -10,11 +11,11 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
+import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
+import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
-
-import { ApiEngineError } from '@/lib/api-engine-error'
-import { ae } from '@/services/ae'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -24,6 +25,8 @@ const formSchema = z.object({
 })
 
 export function LoginForm() {
+  const router = useRouter()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '' },
@@ -31,9 +34,10 @@ export function LoginForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const token = await ae.login(values)
+      const token = await apiEngine.login(values)
       localStorage.setItem('access_token', token.access_token)
       localStorage.setItem('at_expiry', dayjs(token.at_expiry * 1000).toISOString())
+      router.push('/')
     } catch (error) {
       if (error instanceof ApiEngineError) {
         form.setError('root.serverError', {

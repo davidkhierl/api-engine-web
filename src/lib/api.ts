@@ -35,7 +35,7 @@ async function apiFetch<T extends {}, D = any>({
   const reqHeaders = new Headers(init.headers)
   reqHeaders.set('Content-Type', 'application/x-www-form-urlencoded')
 
-  if (typeof window !== undefined) {
+  if (typeof localStorage !== 'undefined' && !reqHeaders.has('Authorization')) {
     const accessToken = localStorage.getItem('access_token')
     if (accessToken) {
       reqHeaders.set('Authorization', `Bearer ${accessToken}`)

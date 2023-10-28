@@ -1,5 +1,5 @@
 export class ApiEngineError extends Error {
-  readonly error: string
+  readonly error: string | undefined
   readonly statusCode: number
   constructor({
     message,
@@ -7,7 +7,7 @@ export class ApiEngineError extends Error {
     statusCode,
   }: {
     message: string
-    error: string
+    error?: string
     statusCode: number
   }) {
     super(message)
