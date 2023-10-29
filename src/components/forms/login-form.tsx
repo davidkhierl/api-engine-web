@@ -11,7 +11,8 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
+import { useAuth } from '@/hooks/use-auth'
+import { FirebaseAuthError } from '@/lib/firebase/firebase-auth-error'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -19,12 +20,13 @@ import * as z from 'zod'
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
+  password: z.string().min(1, { message: 'You must enter your password' }),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
 export function LoginForm() {
+  const signIn = useAuth((state) => state.signIn)
   const router = useRouter()
 
   const form = useForm<FormValues>({
@@ -34,19 +36,19 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      console.log(values)
-
+      await signIn(values)
       router.push('/')
     } catch (error) {
-      if (error instanceof ApiEngineError) {
+      if (error instanceof FirebaseAuthError) {
         form.setError('root.serverError', {
-          type: error.statusCode.toString(),
+          type: '401',
           message: error.message,
         })
       } else if (error instanceof Error) {
+        console.error(error.message)
         form.setError('root.serverError', {
           type: 'manual',
-          message: error.message,
+          message: 'Something went wrong',
         })
       }
     }

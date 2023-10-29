@@ -1,3 +1,3 @@
 export default function AuthorizedLoading() {
-  return <div>Please wait...</div>
+  return <div>Loading dashboard please wait...</div>
 }
