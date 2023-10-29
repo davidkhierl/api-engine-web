@@ -11,24 +11,22 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { useAuthSession } from '@/hooks/use-auth-session'
-import { signInWithCredentials } from '@/lib/firebase/firebase-auth'
-import { FirebaseAuthError } from '@/lib/firebase/firebase-auth-error'
+import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
+import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1, { message: 'You must enter your password' }),
+  password: z.string().min(8, { message: 'password must be at least 8 characters' }),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-export function LoginForm() {
-  const setUser = useAuthSession((state) => state.setUser)
-  const router = useRouter()
+export function RegisterUserForm() {
+  // const signIn = useAuthSession((state) => state.signIn)
+  // const router = useRouter()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -37,15 +35,24 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const userCredential = await signInWithCredentials(values)
-      setUser(userCredential.user)
-      router.push('/')
+      // await signIn(values)
+      // router.push('/')
+      await apiEngine.registerUser(values)
     } catch (error) {
-      if (error instanceof FirebaseAuthError) {
-        form.setError('root.serverError', {
-          type: '401',
-          message: error.message,
-        })
+      if (error instanceof ApiEngineError) {
+        if (error.errors) {
+          error.getConstraints()?.forEach((constraint) => {
+            form.setError(constraint.property as any, {
+              type: 'manual',
+              message: constraint.message,
+            })
+          })
+        } else {
+          form.setError('root.serverError', {
+            type: error.statusCode.toString(),
+            message: error.message,
+          })
+        }
       } else if (error instanceof Error) {
         console.error(error.message)
         form.setError('root.serverError', {
@@ -87,7 +94,7 @@ export function LoginForm() {
         />
         <FormServerErrorMessage />
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Login
+          Register
         </Button>
       </form>
     </Form>

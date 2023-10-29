@@ -1,4 +1,4 @@
-import { UserAuthButton } from '@/components/layout/user-auth-button'
+import { UserAuthButton } from '@/components/auth/user-auth-button'
 import { ThemeModeToggle } from '@/components/theme-mode-toggle'
 import Link from 'next/link'
 
