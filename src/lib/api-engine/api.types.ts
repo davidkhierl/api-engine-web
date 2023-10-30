@@ -1,6 +1,7 @@
 export interface AuthResponse {
   access_token: string
   at_expiry: number
+  user: User
 }
 
 export interface AuthLogin {
@@ -15,7 +16,7 @@ export enum Role {
 
 export interface User {
   id: string
-  name: string
+  displayName?: string
   email: string
   role: Role
   created_at: Date

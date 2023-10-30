@@ -11,7 +11,6 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
 import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -25,7 +24,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function RegisterUserForm() {
-  // const signIn = useAuthSession((state) => state.signIn)
+  // const signIn = useAuthUser((state) => state.signIn)
   // const router = useRouter()
 
   const form = useForm<FormValues>({
@@ -35,31 +34,10 @@ export function RegisterUserForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      // await signIn(values)
-      // router.push('/')
       await apiEngine.registerUser(values)
+      // router.push('/')
     } catch (error) {
-      if (error instanceof ApiEngineError) {
-        if (error.errors) {
-          error.getConstraints()?.forEach((constraint) => {
-            form.setError(constraint.property as any, {
-              type: 'manual',
-              message: constraint.message,
-            })
-          })
-        } else {
-          form.setError('root.serverError', {
-            type: error.statusCode.toString(),
-            message: error.message,
-          })
-        }
-      } else if (error instanceof Error) {
-        console.error(error.message)
-        form.setError('root.serverError', {
-          type: 'manual',
-          message: 'Something went wrong',
-        })
-      }
+      apiEngine.setFormErrors(form.setError, error)
     }
   }
 

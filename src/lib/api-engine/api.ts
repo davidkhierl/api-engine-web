@@ -19,6 +19,10 @@ interface ApiOperations {
   delete: ApiFetchOperationWithData
 }
 
+/**
+ * Api request init config
+ * Body is excluded in replacement of data prop
+ */
 export type ApiInitConfig = Omit<RequestInit, 'body'>
 
 export interface ApiFetchConfig<T extends {}> {
@@ -37,6 +41,7 @@ async function apiFetch<T extends {}, D = any>({
 
   return await fetch(path, {
     body: init?.method !== 'GET' ? new URLSearchParams(data) : undefined,
+    credentials: 'include',
     ...init,
   })
 }

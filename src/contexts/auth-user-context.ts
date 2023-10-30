@@ -1,12 +1,12 @@
-import { User } from 'firebase/auth'
+import { User } from '@/lib/api-engine/api.types'
 import * as React from 'react'
 import { StoreApi } from 'zustand'
 
-export interface AuthSessionContextType {
+export interface AuthUserContextType {
   user?: User
   setUser: (user?: User) => void
   // signIn: (credentials: SignInCredentials) => Promise<UserCredential>
   // authenticate: (errorCallback?: (error: ApiEngineError) => void) => Promise<void>
 }
 
-export const AuthSessionContext = React.createContext<StoreApi<AuthSessionContextType> | null>(null)
+export const AuthUserContext = React.createContext<StoreApi<AuthUserContextType> | null>(null)

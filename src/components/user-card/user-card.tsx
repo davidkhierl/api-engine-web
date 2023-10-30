@@ -5,7 +5,7 @@ import { useUser } from '@/hooks/use-user'
 
 export function UserCard() {
   const user = useUser()
-  console.log(user)
+  // console.log(user)
   return (
     <Card>
       <CardHeader>

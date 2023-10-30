@@ -11,9 +11,8 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { useAuthSession } from '@/hooks/use-auth-session'
-import { signInWithCredentials } from '@/lib/firebase/firebase-auth'
-import { FirebaseAuthError } from '@/lib/firebase/firebase-auth-error'
+import { useAuthUser } from '@/hooks/use-auth-user'
+import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -27,7 +26,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function LoginForm() {
-  const setUser = useAuthSession((state) => state.setUser)
+  const setUser = useAuthUser((state) => state.setUser)
   const router = useRouter()
 
   const form = useForm<FormValues>({
@@ -37,22 +36,11 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const userCredential = await signInWithCredentials(values)
-      setUser(userCredential.user)
-      router.push('/')
+      const tokens = await apiEngine.login(values)
+      console.log(tokens)
+      // router.push('/')
     } catch (error) {
-      if (error instanceof FirebaseAuthError) {
-        form.setError('root.serverError', {
-          type: '401',
-          message: error.message,
-        })
-      } else if (error instanceof Error) {
-        console.error(error.message)
-        form.setError('root.serverError', {
-          type: 'manual',
-          message: 'Something went wrong',
-        })
-      }
+      apiEngine.setFormErrors(form.setError, error)
     }
   }
 
