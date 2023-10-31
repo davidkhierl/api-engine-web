@@ -1,8 +1,10 @@
 export interface AuthResponse {
+  user: User
   access_token: string
   at_expiry: number
-  user: User
 }
+
+export type AuthRefreshResponse = Omit<AuthResponse, 'user'>
 
 export interface AuthLogin {
   email: string

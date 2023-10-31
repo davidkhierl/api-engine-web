@@ -2,12 +2,26 @@ import { ApiInitConfig, api } from '@/lib/api-engine/api'
 import { ApiEngineEndpoints } from '@/lib/api-engine/api-engine-endpoints'
 import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
 import { AuthLogin, AuthResponse, RegisterUserInputs, User } from '@/lib/api-engine/api.types'
+import { getBaseUrl } from '@/lib/utils/get-base-url'
+
 import { FieldPath, FieldValues, UseFormSetError } from 'react-hook-form'
 
 export class ApiEngineService {
   async login(credentials: AuthLogin, config?: ApiInitConfig): Promise<AuthResponse> {
     const res = await api.post<AuthLogin, AuthResponse>(
       ApiEngineEndpoints.LOGIN,
+      credentials,
+      config
+    )
+    const data = await res.json()
+    if (!res.ok) throw new ApiEngineError(data)
+
+    return data as AuthResponse
+  }
+
+  async nextLogin(credentials: AuthLogin, config?: ApiInitConfig): Promise<AuthResponse> {
+    const res = await api.post<AuthLogin, AuthResponse>(
+      `${getBaseUrl()}/api/auth`,
       credentials,
       config
     )
@@ -41,6 +55,25 @@ export class ApiEngineService {
     const data = await res.json()
     if (!res.ok) return
 
+    return data as User
+  }
+
+  async nextGetAuthenticatedUser(config?: ApiInitConfig): Promise<User | undefined> {
+    const { cookies, headers } = await import('next/headers')
+    const accessToken = cookies().get('access_token')
+
+    if (!accessToken?.value) return
+
+    const res = await api.get(ApiEngineEndpoints.CURRENT_USER, {
+      headers: {
+        Authorization: `Bearer ${accessToken.value}`,
+        Cookie: cookies().toString(),
+      },
+    })
+
+    if (!res.ok) return
+
+    const data = await res.json()
     return data as User
   }
 

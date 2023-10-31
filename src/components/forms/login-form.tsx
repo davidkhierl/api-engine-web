@@ -36,9 +36,9 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const tokens = await apiEngine.login(values)
-      console.log(tokens)
-      // router.push('/')
+      const auth = await apiEngine.nextLogin(values)
+      setUser(auth.user)
+      router.push('/')
     } catch (error) {
       apiEngine.setFormErrors(form.setError, error)
     }

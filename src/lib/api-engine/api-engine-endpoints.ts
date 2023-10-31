@@ -14,6 +14,9 @@ export class ApiEngineEndpoints {
   public static readonly LOGOUT = `${ApiEngineEndpoints.getBaseUrl()}/${
     ApiEngineBaseEndpoints.LOGOUT
   }`
+  public static readonly REFRESH = `${ApiEngineEndpoints.getBaseUrl()}/${
+    ApiEngineBaseEndpoints.REFRESH_TOKEN
+  }`
   public static readonly USERS = `${ApiEngineEndpoints.getBaseUrl()}/${
     ApiEngineBaseEndpoints.USERS
   }`
