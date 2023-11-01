@@ -17,7 +17,7 @@ const Slot = React.forwardRef<HTMLElement, SlotProps>((props, forwardedRef) => {
 
     return (
       <SlotClone {...slotProps} ref={forwardedRef}>
-        {React.isValidElement<React.PropsWithChildren<unknown>>(slottable.props.child)
+        {React.isValidElement<React.PropsWithChildren>(slottable.props.child)
           ? React.cloneElement(
               slottable.props.child,
               undefined,
@@ -66,7 +66,7 @@ SlotClone.displayName = 'SlotClone'
 
 type SlottableProps = {
   child: React.ReactNode
-  children: (child: React.ReactNode) => JSX.Element
+  children: (child: React.ReactNode) => React.ReactElement
 }
 
 const Slottable = ({ child, children }: SlottableProps) => {

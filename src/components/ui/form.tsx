@@ -12,7 +12,7 @@ import {
 
 import { Input, InputProps } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils/cn'
+import { cn } from '@/lib/utils/class-name'
 
 const Form = FormProvider
 

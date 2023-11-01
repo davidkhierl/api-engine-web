@@ -11,7 +11,6 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { useAuth } from '@/hooks/use-auth'
 import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -19,13 +18,14 @@ import * as z from 'zod'
 
 const formSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1, { message: 'You must enter your password' }),
+  password: z.string().min(8, { message: 'password must be at least 8 characters' }),
 })
 
 type FormValues = z.infer<typeof formSchema>
 
-export function LoginForm() {
-  const login = useAuth((state) => state.login)
+export function RegisterUserForm() {
+  // const signIn = useAuth((state) => state.signIn)
+  // const router = useRouter()
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -34,7 +34,8 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      await login(values)
+      await apiEngine.registerUser(values)
+      // router.push('/')
     } catch (error) {
       apiEngine.setFormErrors(form.setError, error)
     }
@@ -71,7 +72,7 @@ export function LoginForm() {
         />
         <FormServerErrorMessage />
         <Button type="submit" disabled={form.formState.isSubmitting}>
-          Login
+          Register
         </Button>
       </form>
     </Form>

@@ -19,6 +19,10 @@ interface ApiOperations {
   delete: ApiFetchOperationWithData
 }
 
+/**
+ * Api request init config
+ * Body is excluded in replacement of data prop
+ */
 export type ApiInitConfig = Omit<RequestInit, 'body'>
 
 export interface ApiFetchConfig<T extends {}> {
@@ -35,18 +39,9 @@ async function apiFetch<T extends {}, D = any>({
   const reqHeaders = new Headers(init.headers)
   reqHeaders.set('Content-Type', 'application/x-www-form-urlencoded')
 
-  if (typeof window !== undefined) {
-    const accessToken = localStorage.getItem('access_token')
-    if (accessToken) {
-      reqHeaders.set('Authorization', `Bearer ${accessToken}`)
-    }
-  }
-
-  init.headers = reqHeaders
-
   return await fetch(path, {
-    credentials: 'include',
     body: init?.method !== 'GET' ? new URLSearchParams(data) : undefined,
+    credentials: 'include',
     ...init,
   })
 }
