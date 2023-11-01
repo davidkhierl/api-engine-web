@@ -1,7 +1,7 @@
 import { ApiEngineEndpoints } from '@/lib/api-engine/api-engine-endpoints'
 import { AuthRefreshResponse } from '@/lib/api-engine/api.types'
 import { getBaseUrl } from '@/lib/utils/get-base-url'
-import dayjs from 'dayjs'
+import { isAccessTokenExpired } from '@/lib/utils/is-access-token-expired'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -29,7 +29,9 @@ export async function middleware(request: NextRequest) {
     !sid &&
     !accessToken &&
     request.nextUrl.pathname !== '/login' &&
-    request.nextUrl.pathname !== '/register'
+    request.nextUrl.pathname !== '/register' &&
+    request.nextUrl.pathname !== '/api/auth/login' &&
+    request.nextUrl.pathname !== '/api/auth/logout'
   )
     return NextResponse.redirect(`${getBaseUrl()}/login`)
 
@@ -37,8 +39,7 @@ export async function middleware(request: NextRequest) {
    * We will try to refresh the tokens if the access token is expired
    */
   if (accessTokenExpiry) {
-    console.log(dayjs.unix(parseInt(accessTokenExpiry)).format('MMM DD YYYY, hh:mma'))
-    if (dayjs().isAfter(dayjs.unix(parseInt(accessTokenExpiry)))) {
+    if (isAccessTokenExpired(accessTokenExpiry)) {
       const res = await fetch(ApiEngineEndpoints.REFRESH, {
         headers: request.headers,
         credentials: 'include',
@@ -88,6 +89,6 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 }

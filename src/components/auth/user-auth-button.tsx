@@ -1,12 +1,13 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { useAuth } from '@/hooks/use-auth'
 import { useUser } from '@/hooks/use-user'
-import { apiEngine } from '@/services/api-engine'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 export function UserAuthButton({ className }: { className?: string }) {
+  const logout = useAuth((state) => state.logout)
   const user = useUser()
   const pathName = usePathname()
 
@@ -20,7 +21,7 @@ export function UserAuthButton({ className }: { className?: string }) {
     )
 
   return (
-    <Button className={className} variant="outline" onClick={() => apiEngine.logout()}>
+    <Button className={className} variant="outline" onClick={() => logout()}>
       Sign out
     </Button>
   )

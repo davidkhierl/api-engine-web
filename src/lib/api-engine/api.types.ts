@@ -11,21 +11,35 @@ export interface AuthLogin {
   password: string
 }
 
+export interface RegisterUserInputs {
+  email: string
+  password: string
+}
+
+export interface EntityId {
+  id: string
+}
+
+export interface TimeStamps {
+  created_at: Date
+  updated_at: Date
+}
+
+export type BaseEntity = EntityId & TimeStamps
+
 export enum Role {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
 
-export interface User {
-  id: string
+export interface User extends BaseEntity {
   displayName?: string
   email: string
   role: Role
-  created_at: Date
-  updated_at: Date
 }
 
-export interface RegisterUserInputs {
-  email: string
-  password: string
+export interface Keychain extends BaseEntity {
+  name: string
+  description?: string
+  user_id: string
 }

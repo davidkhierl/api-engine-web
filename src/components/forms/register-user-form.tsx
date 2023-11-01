@@ -24,7 +24,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function RegisterUserForm() {
-  // const signIn = useAuthUser((state) => state.signIn)
+  // const signIn = useAuth((state) => state.signIn)
   // const router = useRouter()
 
   const form = useForm<FormValues>({

@@ -5,6 +5,7 @@ enum ApiEngineBaseEndpoints {
   REFRESH_TOKEN = ApiEngineBaseEndpoints.AUTH + '/refresh',
   USERS = 'users',
   CURRENT_USER = ApiEngineBaseEndpoints.USERS + '/me',
+  KEYCHAINS = 'keychains',
 }
 
 export class ApiEngineEndpoints {
@@ -22,6 +23,9 @@ export class ApiEngineEndpoints {
   }`
   public static readonly CURRENT_USER = `${ApiEngineEndpoints.getBaseUrl()}/${
     ApiEngineBaseEndpoints.CURRENT_USER
+  }`
+  public static readonly KEYCHAINS = `${ApiEngineEndpoints.getBaseUrl()}/${
+    ApiEngineBaseEndpoints.KEYCHAINS
   }`
 
   public static getBaseUrl() {

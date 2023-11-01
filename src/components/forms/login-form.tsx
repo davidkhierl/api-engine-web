@@ -11,10 +11,9 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { useAuthUser } from '@/hooks/use-auth-user'
+import { useAuth } from '@/hooks/use-auth'
 import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -26,8 +25,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function LoginForm() {
-  const setUser = useAuthUser((state) => state.setUser)
-  const router = useRouter()
+  const login = useAuth((state) => state.login)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -36,9 +34,7 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      const auth = await apiEngine.nextLogin(values)
-      setUser(auth.user)
-      router.push('/')
+      await login(values)
     } catch (error) {
       apiEngine.setFormErrors(form.setError, error)
     }

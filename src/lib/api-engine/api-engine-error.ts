@@ -23,7 +23,7 @@ export class ApiEngineError extends Error {
     message: string
     statusCode: number
     error?: string
-    errors: ApiEngineErrorProperty[]
+    errors?: ApiEngineErrorProperty[]
   }) {
     super(message)
     this.error = error
