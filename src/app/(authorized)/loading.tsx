@@ -1,3 +1,3 @@
-export default function AuthorizedLoading() {
-  return <div>Loading dashboard please wait...</div>
+export default function HomeLoading() {
+  return <div>Loading home please wait...</div>
 }

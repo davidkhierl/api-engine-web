@@ -1,5 +1,5 @@
-import { Header } from '@/components/layout/header'
 import { AppProviders } from '@/components/providers/app-providers'
+import { cn } from '@/lib/utils/class-name'
 import type { Metadata } from 'next'
 import { Viewport } from 'next'
 import { Inter } from 'next/font/google'
@@ -23,13 +23,12 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <AppProviders>
-          <div className="min-h-screen bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50">
-            <Header />
-            {children}
-          </div>
-        </AppProviders>
+      <body
+        className={cn(
+          inter.className,
+          'min-h-screen bg-white text-slate-950 dark:bg-slate-950 dark:text-slate-50'
+        )}>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   )
