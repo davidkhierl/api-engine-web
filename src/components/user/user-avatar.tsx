@@ -14,7 +14,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { getNameInitials } from '@/lib/utils/get-name-initials'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
-import { LogOut, User } from 'lucide-react'
+import { Frown, LogOut, User } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import * as React from 'react'
@@ -25,8 +25,17 @@ export interface UserAvatarProps
 function UserAvatar({ className }: { className?: string }) {
   const user = useAuth((state) => state.user)
   const logout = useAuth((state) => state.logout)
+  const [hasErrorLoadingImage, setHasErrorLoadingImage] = React.useState(false)
 
-  if (!user) return null
+  if (!user)
+    return (
+      <div
+        title="No user found"
+        className="flex h-10 w-10 items-center justify-center rounded-md bg-red-100 text-red-700">
+        <Frown />
+        <span className="sr-only">Error loading user</span>
+      </div>
+    )
 
   const name = user.displayName ?? user.email
 
@@ -36,7 +45,17 @@ function UserAvatar({ className }: { className?: string }) {
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-md">
         <Avatar>
-          <Image src="/images/avatar-default-1.png" alt={name} width={40} height={40} priority />
+          {!hasErrorLoadingImage && (
+            <Image
+              src={user.avatarUrl}
+              onError={(e) => setHasErrorLoadingImage(true)}
+              className="absolute left-0 top-0"
+              alt={name}
+              width={40}
+              height={40}
+              priority
+            />
+          )}
           {/*<AvatarImage src="/images/avatar-default-1.png" alt={name} />*/}
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
@@ -44,17 +63,13 @@ function UserAvatar({ className }: { className?: string }) {
       <DropdownMenuPortal>
         <DropdownMenuContent>
           <DropdownMenuLabel className="flex items-center gap-2">
-            <Avatar>
-              {/*<AvatarImage src="/images/avatar-default-1.png" alt={name} />*/}
-              <Image
-                src="/images/avatar-default-1.png"
-                alt={name}
-                width={40}
-                height={40}
-                priority
-              />
-              <AvatarFallback>{initials}</AvatarFallback>
-            </Avatar>
+            {!hasErrorLoadingImage && (
+              <Avatar>
+                {/*<AvatarImage src="/images/avatar-default-1.png" alt={name} />*/}
+                <Image src={user.avatarUrl} alt={name} width={40} height={40} priority />
+                <AvatarFallback>{initials}</AvatarFallback>
+              </Avatar>
+            )}
             <span>{name}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />

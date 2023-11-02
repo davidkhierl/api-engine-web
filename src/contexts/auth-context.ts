@@ -7,6 +7,7 @@ export interface AuthUserContextType {
   setUser: (user?: User) => void
   login: (credentials: AuthLogin) => Promise<AuthResponse>
   logout: () => Promise<void>
+  register: (credentials: AuthLogin) => Promise<AuthResponse>
 }
 
 export const AuthContext = React.createContext<StoreApi<AuthUserContextType> | null>(null)

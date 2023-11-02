@@ -31,7 +31,8 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname !== '/login' &&
     request.nextUrl.pathname !== '/register' &&
     request.nextUrl.pathname !== '/api/auth/login' &&
-    request.nextUrl.pathname !== '/api/auth/logout'
+    request.nextUrl.pathname !== '/api/auth/logout' &&
+    request.nextUrl.pathname !== '/api/auth/register'
   )
     return NextResponse.redirect(`${getBaseUrl()}/login`)
 

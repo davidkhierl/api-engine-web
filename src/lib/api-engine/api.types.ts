@@ -33,8 +33,9 @@ export enum Role {
 }
 
 export interface User extends BaseEntity {
-  displayName?: string
   email: string
+  displayName?: string
+  avatarUrl: string
   role: Role
 }
 

@@ -20,12 +20,10 @@ export function AuthProvider({ children, user }: { children?: React.ReactNode; u
       },
       async login(credentials) {
         const auth = await apiEngine.login(credentials)
-        console.log(auth)
         set({ user: auth.user })
         localStorage.setItem('access_token', auth.access_token)
         localStorage.setItem('at_expiry', auth.at_expiry.toString())
         router.push('/')
-
         return auth
       },
       async logout() {
@@ -33,6 +31,14 @@ export function AuthProvider({ children, user }: { children?: React.ReactNode; u
         localStorage.removeItem('access_token')
         localStorage.removeItem('at_expiry')
         router.push('/login')
+      },
+      async register(credentials) {
+        const auth = await apiEngine.registerUser(credentials)
+        set({ user: auth.user })
+        localStorage.setItem('access_token', auth.access_token)
+        localStorage.setItem('at_expiry', auth.at_expiry.toString())
+        router.push('/')
+        return auth
       },
     }))
   }

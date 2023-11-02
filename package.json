@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dotlottie/react-player": "^1.6.3",
     "@hookform/resolvers": "^3.3.2",
     "@radix-ui/react-accessible-icon": "^1.0.3",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -38,7 +39,7 @@
     "@types/cookie": "^0.5.3",
     "@types/lodash-es": "^4.17.10",
     "@types/node": "^20.8.10",
-    "@types/react": "^18.2.33",
+    "@types/react": "^18.2.34",
     "@types/react-dom": "^18",
     "@types/set-cookie-parser": "^2.4.5",
     "autoprefixer": "^10",

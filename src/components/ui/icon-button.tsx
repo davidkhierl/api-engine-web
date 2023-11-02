@@ -1,5 +1,6 @@
 import { Slot, Slottable } from '@/components/primitives/slot'
 import { Icon } from '@/components/ui/icon'
+import { cn } from '@/lib/utils/class-name'
 import { type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import { buttonVariants } from './button'
@@ -18,7 +19,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <Comp
         ref={ref}
         type={!asChild ? 'button' : undefined}
-        className={className(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, className }))}
         {...props}>
         <Slottable child={children}>{(child) => <Icon label={label}>{child}</Icon>}</Slottable>
       </Comp>

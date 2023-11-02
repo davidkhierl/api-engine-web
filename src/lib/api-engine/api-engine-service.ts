@@ -19,7 +19,6 @@ export class ApiEngineService {
    * Login user using next route handler
    */
   async login(credentials: AuthLogin, config?: ApiInitConfig): Promise<AuthResponse> {
-    console.log('login')
     const res = await api.post<AuthLogin>(`${getBaseUrl()}/api/auth/login`, credentials, {
       ...config,
       cache: 'no-cache',
@@ -47,14 +46,17 @@ export class ApiEngineService {
   async registerUser(
     registerUserInputs: RegisterUserInputs,
     config?: ApiInitConfig
-  ): Promise<User> {
-    const res = await api.post(ApiEngineEndpoints.USERS, registerUserInputs, config)
+  ): Promise<AuthResponse> {
+    const res = await api.post(`${getBaseUrl()}/api/auth/register`, registerUserInputs, {
+      ...config,
+      cache: 'no-cache',
+    })
     const data = await res.json()
     if (!res.ok) {
       throw new ApiEngineError(data)
     }
 
-    return data as User
+    return data as AuthResponse
   }
 
   /**
@@ -161,7 +163,7 @@ export class ApiEngineService {
         })
       }
     }
-    // if (error instanceof Error) {
+    // if (error instanceof RootError) {
     //   console.error(error.message)
     //   setError('root.serverError', {
     //     type: 'manual',

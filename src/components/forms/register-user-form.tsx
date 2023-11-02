@@ -11,6 +11,7 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
+import { useAuth } from '@/hooks/use-auth'
 import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -24,8 +25,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function RegisterUserForm() {
-  // const signIn = useAuth((state) => state.signIn)
-  // const router = useRouter()
+  const register = useAuth((state) => state.register)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -34,8 +34,7 @@ export function RegisterUserForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      await apiEngine.registerUser(values)
-      // router.push('/')
+      await register(values)
     } catch (error) {
       apiEngine.setFormErrors(form.setError, error)
     }

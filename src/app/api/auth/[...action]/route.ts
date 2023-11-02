@@ -5,9 +5,14 @@ import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
 import * as z from 'zod'
 
-const formDataSchema = z.object({
+const loginFormDataSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, { message: 'You must enter your password' }),
+})
+
+const registerFormDataSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8, { message: 'password must be at least 8 characters' }),
 })
 
 export async function POST(request: NextRequest, { params }: { params: { action: string } }) {
@@ -16,7 +21,7 @@ export async function POST(request: NextRequest, { params }: { params: { action:
       const formData = await request.formData()
       const email = formData.get('email')
       const password = formData.get('password')
-      const credentials = await formDataSchema.safeParseAsync({ email, password })
+      const credentials = await loginFormDataSchema.safeParseAsync({ email, password })
 
       if (!credentials.success) {
         const errors = credentials.error.errors.map((issue) => ({
@@ -34,40 +39,100 @@ export async function POST(request: NextRequest, { params }: { params: { action:
         )
       }
 
-      const res = await fetch(ApiEngineEndpoints.LOGIN, {
-        method: 'post',
-        credentials: 'include',
-        body: new URLSearchParams(credentials.data),
-      })
-
-      if (res.ok) {
-        const tokens = (await res.json()) as AuthResponse
-
-        cookies().set('access_token', tokens.access_token, { httpOnly: true })
-        cookies().set('at_expiry', tokens.at_expiry.toString(), { httpOnly: true })
-
-        return Response.json(tokens, {
-          status: res.status,
-          statusText: res.statusText,
-          headers: res.headers,
+      try {
+        const res = await fetch(ApiEngineEndpoints.LOGIN, {
+          method: 'post',
+          credentials: 'include',
+          body: new URLSearchParams(credentials.data),
         })
-      }
 
-      return res
+        if (res.ok) {
+          const auth = (await res.json()) as AuthResponse
+
+          setAuthTokens(auth.access_token, auth.at_expiry)
+
+          return Response.json(auth, {
+            status: res.status,
+            statusText: res.statusText,
+            headers: res.headers,
+          })
+        }
+
+        return res
+      } catch (error) {
+        return Response.json(
+          { message: 'Failed to connect from server', statusCode: 500, error: 'Server Error' },
+          { status: 500 }
+        )
+      }
     }
     case 'logout': {
-      const res = await fetch(ApiEngineEndpoints.LOGOUT, {
-        method: 'post',
-        headers: request.headers,
-        credentials: 'include',
-      })
+      try {
+        const res = await fetch(ApiEngineEndpoints.LOGOUT, {
+          method: 'post',
+          headers: request.headers,
+          credentials: 'include',
+        })
 
-      if (res.ok) {
         cookies().delete('sid')
         cookies().delete('access_token')
         cookies().delete('at_expiry')
+
+        return res
+      } catch (error) {
+        return Response.json(
+          { message: 'Failed to connect from server', statusCode: 500, error: 'Server Error' },
+          { status: 500 }
+        )
       }
-      return res
+    }
+    case 'register': {
+      const formData = await request.formData()
+      const email = formData.get('email')
+      const password = formData.get('password')
+      const credentials = await registerFormDataSchema.safeParseAsync({ email, password })
+
+      if (!credentials.success) {
+        const errors = credentials.error.errors.map((issue) => ({
+          property: issue.path[0],
+          constraints: {
+            [`${camelCase(issue.code)}`]: issue.message,
+          },
+        }))
+
+        return Response.json(
+          { statusCode: 400, message: 'Bad User Input', errors },
+          {
+            status: 400,
+          }
+        )
+      }
+
+      try {
+        const res = await fetch(ApiEngineEndpoints.USERS, {
+          method: 'post',
+          credentials: 'include',
+          body: new URLSearchParams(credentials.data),
+        })
+
+        if (res.ok) {
+          const auth = (await res.json()) as AuthResponse
+          setAuthTokens(auth.access_token, auth.at_expiry)
+
+          return Response.json(auth, {
+            status: res.status,
+            statusText: res.statusText,
+            headers: res.headers,
+          })
+        }
+
+        return res
+      } catch (error) {
+        return Response.json(
+          { message: 'Failed to connect from server', statusCode: 500, error: 'Server Error' },
+          { status: 500 }
+        )
+      }
     }
     default: {
       return Response.json(
@@ -97,4 +162,10 @@ export async function GET(request: NextRequest, { params }: { params: { action: 
       )
     }
   }
+}
+
+function setAuthTokens(access_token: string, at_expiry: number) {
+  const maxAge = 3 * 30 * 24 * 60 * 60 // 120d
+  cookies().set('access_token', access_token, { httpOnly: true, maxAge })
+  cookies().set('at_expiry', at_expiry.toString(), { httpOnly: true, maxAge })
 }
