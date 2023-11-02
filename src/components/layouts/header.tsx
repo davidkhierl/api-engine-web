@@ -1,6 +1,6 @@
-import { UserAuthButton } from '@/components/auth/user-auth-button'
 import { ThemeModeToggle } from '@/components/theme-mode-toggle'
 import { Input } from '@/components/ui/input'
+import { UserAvatar } from '@/components/user/user-avatar'
 import { cn } from '@/lib/utils/class-name'
 
 export function Header({ className }: { className?: string }) {
@@ -13,7 +13,8 @@ export function Header({ className }: { className?: string }) {
       <Input placeholder="Search" className="border-none" />
       <div className="flex gap-2">
         <ThemeModeToggle variant="ghost" />
-        <UserAuthButton />
+        {/*<UserAuthButton />*/}
+        <UserAvatar />
       </div>
     </header>
   )
