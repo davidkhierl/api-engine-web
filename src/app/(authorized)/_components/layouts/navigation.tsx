@@ -4,7 +4,7 @@ import { Home, KeyRound } from 'lucide-react'
 
 export function Navigation({ className }: { className?: string }) {
   return (
-    <nav className={cn('flex flex-col gap-2', className)}>
+    <nav className={cn('flex gap-2', className)}>
       <NavLink href="/" icon={<Home className="h-4 w-4" />}>
         Home
       </NavLink>

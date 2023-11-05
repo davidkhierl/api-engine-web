@@ -1,4 +1,4 @@
-import { Navigation } from '@/components/layouts/navigation'
+import { Navigation } from '@/app/(authorized)/_components/layouts/navigation'
 import { cn } from '@/lib/utils/class-name'
 import { Waypoints } from 'lucide-react'
 import Link from 'next/link'

@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/hooks/use-auth'
+import { cn } from '@/lib/utils/class-name'
 import { getNameInitials } from '@/lib/utils/get-name-initials'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import { Frown, LogOut, User } from 'lucide-react'
@@ -43,12 +44,16 @@ function UserAvatar({ className }: { className?: string }) {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="rounded-md">
+      <DropdownMenuTrigger
+        className={cn(
+          'rounded-md ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300',
+          className
+        )}>
         <Avatar>
           {!hasErrorLoadingImage && (
             <Image
               src={user.avatarUrl}
-              onError={(e) => setHasErrorLoadingImage(true)}
+              onError={() => setHasErrorLoadingImage(true)}
               className="absolute left-0 top-0"
               alt={name}
               width={40}
