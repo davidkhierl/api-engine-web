@@ -62,11 +62,17 @@ export class ApiEngineService {
   /**
    * Get authenticated user
    */
-  async getAuthenticatedUser(config?: ApiInitConfig) {
-    const res = await api.get(ApiEngineEndpoints.CURRENT_USER, config)
-    if (!res.ok) return
-    const data = await res.json()
-    return data as User
+  async getAuthenticatedUser() {
+    // const res = await api.get(ApiEngineEndpoints.CURRENT_USER, config)
+    // if (!res.ok) return
+    // const data = await res.json()
+    // return data as User
+    return await this._fetchHandler(async ({ access_token }) => {
+      const res = await api.get(ApiEngineEndpoints.CURRENT_USER)
+      const data = await res.json()
+      if (!res.ok) throw new ApiEngineError(data)
+      return data as User
+    })
   }
 
   /**
@@ -114,10 +120,21 @@ export class ApiEngineService {
    * @private
    */
   private async _fetchHandler<T>(
-    fetcher: (auth: { access_token: string; at_expiry: string | null }) => Promise<T>
+    fetcher: (auth: { access_token: string; at_expiry?: string | null }) => Promise<T>
   ) {
-    let access_token = localStorage.getItem('access_token')
-    let at_expiry = localStorage.getItem('at_expiry')
+    const isServer = typeof window === 'undefined'
+
+    let access_token: string | null | undefined = null
+    let at_expiry: string | null | undefined = null
+
+    if (isServer) {
+      const { cookies } = await import('next/headers')
+      access_token = cookies().get('access_token')?.value
+      at_expiry = cookies().get('at_expiry')?.value
+    } else {
+      access_token = localStorage.getItem('access_token')
+      at_expiry = localStorage.getItem('at_expiry')
+    }
 
     if (!access_token) throw new ApiEngineError({ message: 'Unauthorized', statusCode: 401 })
 
@@ -126,8 +143,10 @@ export class ApiEngineService {
         const res = await api.get(`${getBaseUrl()}/api/auth/refresh`, { cache: 'no-cache' })
         if (res.ok) {
           const auth = (await res.json()) as AuthRefreshResponse
-          localStorage.setItem('access_token', auth.access_token)
-          localStorage.setItem('at_expiry', auth.at_expiry.toString())
+          if (!isServer) {
+            localStorage.setItem('access_token', auth.access_token)
+            localStorage.setItem('at_expiry', auth.at_expiry.toString())
+          }
           access_token = auth.access_token
           at_expiry = auth.at_expiry.toString()
           return fetcher({ access_token: auth.access_token, at_expiry: auth.at_expiry.toString() })

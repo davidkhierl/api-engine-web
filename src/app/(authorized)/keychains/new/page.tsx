@@ -1,3 +1,5 @@
+import { KeychainForm } from '@/components/forms/keychain-form'
+
 export default function NewKeychainPage() {
-  return <div>New Keychain</div>
+  return <KeychainForm />
 }

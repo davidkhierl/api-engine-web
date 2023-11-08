@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { useEffect } from 'react'
 
-export default function RootError({
+export default function KeychainsError({
   error,
   reset,
 }: {
@@ -17,7 +17,7 @@ export default function RootError({
 
   return (
     <main className="flex h-full w-full flex-col items-center justify-center gap-2">
-      <h2>Something went wrong! Root Error</h2>
+      <h2>Something went wrong! Keychains</h2>
       <Button
         onClick={
           // Attempt to recover by trying to re-render the segment

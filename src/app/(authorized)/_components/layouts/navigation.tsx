@@ -1,16 +1,26 @@
 import { NavLink } from '@/components/ui/nav-link'
-import { cn } from '@/lib/utils/class-name'
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu'
 import { Home, KeyRound } from 'lucide-react'
 
 export function Navigation({ className }: { className?: string }) {
   return (
-    <nav className={cn('flex gap-2', className)}>
-      <NavLink href="/" icon={<Home className="h-4 w-4" />}>
-        Home
-      </NavLink>
-      <NavLink href="/keychains" icon={<KeyRound className="h-4 w-4" />}>
-        Keychains
-      </NavLink>
-    </nav>
+    <NavigationMenu>
+      <NavigationMenuList>
+        <NavigationMenuItem>
+          <NavLink href="/" icon={<Home className="h-4 w-4" />}>
+            Home
+          </NavLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <NavLink href="/keychains" icon={<KeyRound className="h-4 w-4" />}>
+            Keychains
+          </NavLink>
+        </NavigationMenuItem>
+      </NavigationMenuList>
+    </NavigationMenu>
   )
 }

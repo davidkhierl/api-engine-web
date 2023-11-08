@@ -1,5 +1,6 @@
 'use client'
 
+import { NavigationMenuLink, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu'
 import { cn } from '@/lib/utils/class-name'
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -13,20 +14,18 @@ export interface NavLinkProps extends LinkProps, HTMLAttributes<HTMLAnchorElemen
 const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
   ({ children, className, href, icon, ...props }, ref) => {
     const pathname = usePathname()
-
+    const isActive = pathname === href
     return (
-      <Link
-        ref={ref}
-        className={cn(
-          'inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-md px-4 py-2 text-sm font-medium text-slate-900 ring-offset-white transition-colors hover:bg-slate-200/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:text-slate-50 dark:ring-offset-slate-950 dark:hover:bg-slate-900/50 dark:focus-visible:ring-slate-300',
-          pathname === href &&
-            'bg-slate-900 text-slate-50 hover:bg-slate-900/90 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-950/80',
-          className
-        )}
-        href={href}
-        {...props}>
-        {icon}
-        {children}
+      <Link ref={ref} href={href} passHref legacyBehavior {...props}>
+        <NavigationMenuLink
+          className={cn(
+            'inline-flex items-center gap-2 ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:ring-offset-slate-950 dark:focus-visible:ring-slate-300',
+            navigationMenuTriggerStyle()
+          )}
+          active={isActive}>
+          {icon}
+          {children}
+        </NavigationMenuLink>
       </Link>
     )
   }
