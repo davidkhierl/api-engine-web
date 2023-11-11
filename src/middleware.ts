@@ -10,15 +10,14 @@ export async function middleware(request: NextRequest) {
   const accessToken = cookies().get('access_token')?.value
   const accessTokenExpiry = cookies().get('at_expiry')?.value
 
-  /**
-   *
-   */
   if (
     sid &&
+    accessToken &&
     (request.nextUrl.pathname.startsWith('/login') ||
       request.nextUrl.pathname.startsWith('/register'))
-  )
+  ) {
     return NextResponse.redirect(`${getBaseUrl()}`)
+  }
 
   /**
    * Redirects to log in if all cookies are not set
@@ -26,8 +25,7 @@ export async function middleware(request: NextRequest) {
    * http://localhost:3000/login?redirect={users account page}
    */
   if (
-    !sid &&
-    !accessToken &&
+    (!sid || !accessToken) &&
     request.nextUrl.pathname !== '/login' &&
     request.nextUrl.pathname !== '/register' &&
     request.nextUrl.pathname !== '/api/auth/login' &&

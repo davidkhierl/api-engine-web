@@ -14,6 +14,7 @@ import {
 import { cn } from '@/lib/utils/class-name'
 import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -31,6 +32,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function KeychainForm({ className, defaultValues, buttonClassName }: KeychainFormProps) {
+  const router = useRouter()
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,6 +44,8 @@ export function KeychainForm({ className, defaultValues, buttonClassName }: Keyc
 
   async function onSubmit(values: FormValues) {
     try {
+      await apiEngine.createKeychain(values)
+      router.push('/keychains')
     } catch (error) {
       apiEngine.setFormErrors(form.setError, error)
     }

@@ -1,10 +1,10 @@
-import { ApiInitConfig, api } from '@/lib/api-engine/api'
 import { ApiEngineEndpoints } from '@/lib/api-engine/api-engine-endpoints'
 import { ApiEngineError } from '@/lib/api-engine/api-engine-error'
 import {
   AuthLogin,
   AuthRefreshResponse,
   AuthResponse,
+  CreateKeychainInputs,
   Keychain,
   RegisterUserInputs,
   User,
@@ -12,15 +12,18 @@ import {
 import { getBaseUrl } from '@/lib/utils/get-base-url'
 
 import { isAccessTokenExpired } from '@/lib/utils/is-access-token-expired'
+import { redirect } from 'next/navigation'
 import { FieldPath, FieldValues, UseFormSetError } from 'react-hook-form'
 
 export class ApiEngineService {
   /**
    * Login user using next route handler
    */
-  async login(credentials: AuthLogin, config?: ApiInitConfig): Promise<AuthResponse> {
-    const res = await api.post<AuthLogin>(`${getBaseUrl()}/api/auth/login`, credentials, {
-      ...config,
+  async login(credentials: AuthLogin): Promise<AuthResponse> {
+    const res = await fetch(`${getBaseUrl()}/api/auth/login`, {
+      method: 'post',
+      body: new URLSearchParams({ ...credentials }),
+      credentials: 'include',
       cache: 'no-cache',
     })
     const data = await res.json()
@@ -32,30 +35,27 @@ export class ApiEngineService {
    * Logout user using next route handler
    */
   async logout() {
-    const res = await api.post(`${getBaseUrl()}/api/auth/logout`, undefined, { cache: 'no-cache' })
-
-    if (!res.ok) {
-      const data = await res.json()
-      console.error(data)
-    }
+    void (await fetch(`${getBaseUrl()}/api/auth/logout`, {
+      method: 'post',
+      credentials: 'include',
+      cache: 'no-cache',
+    }))
   }
 
   /**
-   * Register new user
+   * Register new user using next route handler
    */
-  async registerUser(
-    registerUserInputs: RegisterUserInputs,
-    config?: ApiInitConfig
-  ): Promise<AuthResponse> {
-    const res = await api.post(`${getBaseUrl()}/api/auth/register`, registerUserInputs, {
-      ...config,
+  async registerUser(registerUserInputs: RegisterUserInputs): Promise<AuthResponse> {
+    const res = await fetch(`${getBaseUrl()}/api/auth/register`, {
+      method: 'post',
+      body: new URLSearchParams({ ...registerUserInputs }),
+      credentials: 'include',
       cache: 'no-cache',
     })
     const data = await res.json()
     if (!res.ok) {
       throw new ApiEngineError(data)
     }
-
     return data as AuthResponse
   }
 
@@ -63,71 +63,102 @@ export class ApiEngineService {
    * Get authenticated user
    */
   async getAuthenticatedUser() {
-    // const res = await api.get(ApiEngineEndpoints.CURRENT_USER, config)
-    // if (!res.ok) return
-    // const data = await res.json()
-    // return data as User
-    return await this._fetchHandler(async ({ access_token }) => {
-      const res = await api.get(ApiEngineEndpoints.CURRENT_USER)
+    return this._fetchHandler(async (headers) => {
+      const res = await fetch(ApiEngineEndpoints.CURRENT_USER, {
+        method: 'get',
+        headers,
+        credentials: 'include',
+      })
       const data = await res.json()
-      if (!res.ok) throw new ApiEngineError(data)
+      if (!res.ok) return
       return data as User
     })
   }
 
   /**
-   * Get authenticated user server side
+   * Create a keychain
+   * @param createKeychainInputs
    */
-  async getAuthenticatedUserServerSide(): Promise<User | undefined> {
-    const { cookies } = await import('next/headers')
-    const accessToken = cookies().get('access_token')
-
-    if (!accessToken?.value) return
-
-    const res = await api.get(ApiEngineEndpoints.CURRENT_USER, {
-      headers: {
-        Authorization: `Bearer ${accessToken.value}`,
-        Cookie: cookies().toString(),
-      },
-    })
-
-    if (!res.ok) return
-
-    const data = await res.json()
-    return data as User
-  }
-
-  async getAllKeychains() {
-    return await this._fetchHandler(async ({ access_token }) => {
-      const res = await api.get(ApiEngineEndpoints.KEYCHAINS, {
-        headers: {
-          Authorization: `Bearer ${access_token}`,
-        },
+  async createKeychain(createKeychainInputs: CreateKeychainInputs) {
+    return await this._fetchHandler(async (headers) => {
+      const res = await fetch(ApiEngineEndpoints.KEYCHAINS, {
+        method: 'post',
+        headers,
+        credentials: 'include',
+        body: new URLSearchParams(createKeychainInputs),
       })
 
       const data = await res.json()
-      if (!res.ok) {
-        throw new ApiEngineError(data)
-      }
+      if (!res.ok) throw new ApiEngineError(data)
 
+      return data as Keychain
+    })
+  }
+
+  /**
+   * Get all keychains
+   */
+  async getAllKeychains() {
+    return await this._fetchHandler(async (headers) => {
+      const res = await fetch(ApiEngineEndpoints.KEYCHAINS, {
+        method: 'get',
+        headers,
+        credentials: 'include',
+        next: {
+          tags: ['keychains'],
+        },
+      })
+
+      if (!res.ok) return
+
+      const data = await res.json()
       return data as Keychain[]
     })
   }
 
   /**
-   * Internal fetch handler, provides the access token to be used in the authorization header, it also
+   * Get keychain
+   */
+  async getKeychain(id: string) {
+    return await this._fetchHandler(async (headers) => {
+      const res = await fetch(`${ApiEngineEndpoints.KEYCHAINS}/${id}`, {
+        method: 'get',
+        headers,
+        credentials: 'include',
+      })
+
+      if (!res.ok) return
+
+      const data = await res.json()
+      return data as Keychain
+    })
+  }
+
+  /**
+   * Internal fetch handler, provides a header with authorization and access token, it also
    * performs refresh token if the access token is expired and returns a new refreshed access token.
    * @private
    */
   private async _fetchHandler<T>(
-    fetcher: (auth: { access_token: string; at_expiry?: string | null }) => Promise<T>
+    fetcher: (
+      headers: Headers,
+      auth: { access_token: string; at_expiry?: string | null }
+    ) => Promise<T>
   ) {
-    const isServer = typeof window === 'undefined'
+    // create new header
+    const headers = new Headers()
+    let access_token: string | null | undefined
+    let at_expiry: string | null | undefined
 
-    let access_token: string | null | undefined = null
-    let at_expiry: string | null | undefined = null
+    /**
+     * apply the cookie from request cookie in server to the new header and set the access token
+     * from the request cookie or from localstorage in client side
+     */
+    if (this.isServer()) {
+      const { headers: nextHeaders } = await import('next/headers')
+      const cookie = nextHeaders().get('cookie')
+      if (cookie) headers.append('cookie', cookie)
 
-    if (isServer) {
       const { cookies } = await import('next/headers')
       access_token = cookies().get('access_token')?.value
       at_expiry = cookies().get('at_expiry')?.value
@@ -136,25 +167,42 @@ export class ApiEngineService {
       at_expiry = localStorage.getItem('at_expiry')
     }
 
-    if (!access_token) throw new ApiEngineError({ message: 'Unauthorized', statusCode: 401 })
+    /**
+     * safeguard redirect to login page if there is no access token found
+     * although this is already being handled in middleware.ts
+     */
+    if (!access_token) redirect('/login')
 
-    if (at_expiry) {
-      if (isAccessTokenExpired(at_expiry)) {
-        const res = await api.get(`${getBaseUrl()}/api/auth/refresh`, { cache: 'no-cache' })
-        if (res.ok) {
-          const auth = (await res.json()) as AuthRefreshResponse
-          if (!isServer) {
-            localStorage.setItem('access_token', auth.access_token)
-            localStorage.setItem('at_expiry', auth.at_expiry.toString())
-          }
-          access_token = auth.access_token
-          at_expiry = auth.at_expiry.toString()
-          return fetcher({ access_token: auth.access_token, at_expiry: auth.at_expiry.toString() })
+    // set the authorization header
+    headers.append('Authorization', `Bearer ${access_token}`)
+
+    if (at_expiry && isAccessTokenExpired(at_expiry)) {
+      const res = await fetch(`${getBaseUrl()}/api/auth/refresh`, {
+        credentials: 'include',
+        cache: 'no-cache',
+      })
+
+      if (!res.ok) redirect('/login')
+
+      if (res.ok) {
+        const auth = (await res.json()) as AuthRefreshResponse
+        // set the authorization header with the new access token
+        headers.set('Authorization', `Bearer ${auth.access_token}`)
+
+        // update the values in localstorage
+        if (!this.isServer()) {
+          localStorage.setItem('access_token', auth.access_token)
+          localStorage.setItem('at_expiry', auth.at_expiry.toString())
         }
+
+        return fetcher(headers, {
+          access_token: auth.access_token,
+          at_expiry: auth.at_expiry.toString(),
+        })
       }
     }
 
-    return fetcher({ access_token, at_expiry })
+    return fetcher(headers, { access_token, at_expiry })
   }
 
   /**
@@ -182,12 +230,9 @@ export class ApiEngineService {
         })
       }
     }
-    // if (error instanceof RootError) {
-    //   console.error(error.message)
-    //   setError('root.serverError', {
-    //     type: 'manual',
-    //     message: 'Something went wrong',
-    //   })
-    // }
+  }
+
+  private isServer() {
+    return typeof window === 'undefined'
   }
 }

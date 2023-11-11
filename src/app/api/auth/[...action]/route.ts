@@ -68,23 +68,17 @@ export async function POST(request: NextRequest, { params }: { params: { action:
     }
     case 'logout': {
       try {
-        const res = await fetch(ApiEngineEndpoints.LOGOUT, {
+        await fetch(ApiEngineEndpoints.LOGOUT, {
           method: 'post',
           headers: request.headers,
           credentials: 'include',
         })
-
+      } finally {
         cookies().delete('sid')
         cookies().delete('access_token')
         cookies().delete('at_expiry')
-
-        return res
-      } catch (error) {
-        return Response.json(
-          { message: 'Failed to connect from server', statusCode: 500, error: 'Server Error' },
-          { status: 500 }
-        )
       }
+      return new Response(null, { status: 204 })
     }
     case 'register': {
       const formData = await request.formData()

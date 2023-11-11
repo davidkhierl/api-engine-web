@@ -1,5 +1,4 @@
-'use client'
-
+import { LogoutButton } from '@/components/logout-button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -11,22 +10,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useAuth } from '@/hooks/use-auth'
 import { cn } from '@/lib/utils/class-name'
 import { getNameInitials } from '@/lib/utils/get-name-initials'
+import { apiEngine } from '@/services/api-engine'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import { Frown, LogOut, User } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import * as React from 'react'
 
 export interface UserAvatarProps
   extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {}
 
-function UserAvatar({ className }: { className?: string }) {
-  const user = useAuth((state) => state.user)
-  const logout = useAuth((state) => state.logout)
-  const [hasErrorLoadingImage, setHasErrorLoadingImage] = React.useState(false)
+async function UserAvatar({ className }: { className?: string }) {
+  const user = await apiEngine.getAuthenticatedUser()
 
   if (!user)
     return (
@@ -50,17 +46,15 @@ function UserAvatar({ className }: { className?: string }) {
           className
         )}>
         <Avatar>
-          {!hasErrorLoadingImage && (
-            <Image
-              src={user.avatarUrl}
-              onError={() => setHasErrorLoadingImage(true)}
-              className="absolute left-0 top-0"
-              alt={name}
-              width={40}
-              height={40}
-              priority
-            />
-          )}
+          {/*<Image*/}
+          {/*  src={user.avatarUrl}*/}
+          {/*  onError={() => setHasErrorLoadingImage(true)}*/}
+          {/*  className="absolute left-0 top-0"*/}
+          {/*  alt={name}*/}
+          {/*  width={40}*/}
+          {/*  height={40}*/}
+          {/*  priority*/}
+          {/*/>*/}
           {/*<AvatarImage src="/images/avatar-default-1.png" alt={name} />*/}
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
@@ -68,13 +62,12 @@ function UserAvatar({ className }: { className?: string }) {
       <DropdownMenuPortal>
         <DropdownMenuContent>
           <DropdownMenuLabel className="flex items-center gap-2">
-            {!hasErrorLoadingImage && (
-              <Avatar>
-                {/*<AvatarImage src="/images/avatar-default-1.png" alt={name} />*/}
-                <Image src={user.avatarUrl} alt={name} width={40} height={40} priority />
-                <AvatarFallback>{initials}</AvatarFallback>
-              </Avatar>
-            )}
+            <Avatar>
+              {/*<AvatarImage src="/images/avatar-default-1.png" alt={name} />*/}
+              {/*<Image src={user.avatarUrl} alt={name} width={40} height={40} priority />*/}
+              <AvatarFallback>{initials}</AvatarFallback>
+            </Avatar>
+
             <span>{name}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -88,10 +81,10 @@ function UserAvatar({ className }: { className?: string }) {
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <button type="button" className="inline-flex w-full gap-2" onClick={() => logout()}>
+            <LogoutButton type="button" className="inline-flex w-full gap-2">
               <LogOut className="h-4 w-4" />
               Logout
-            </button>
+            </LogoutButton>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenuPortal>

@@ -11,9 +11,9 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { useAuth } from '@/hooks/use-auth'
 import { apiEngine } from '@/services/api-engine'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -25,8 +25,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function LoginForm() {
-  const login = useAuth((state) => state.login)
-
+  const { push } = useRouter()
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '' },
@@ -34,7 +33,11 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      await login(values)
+      await apiEngine.login(values)
+      /**
+       * TODO: add redirect from redirect query param
+       */
+      push('/')
     } catch (error) {
       apiEngine.setFormErrors(form.setError, error)
     }

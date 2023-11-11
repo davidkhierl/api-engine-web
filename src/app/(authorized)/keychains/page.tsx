@@ -1,12 +1,10 @@
-import { Construction } from 'lucide-react'
+import { apiEngine } from '@/services/api-engine'
 
-export default function KeychainPage() {
+export default async function KeychainPage() {
+  const keychains = await apiEngine.getAllKeychains()
   return (
-    <div className="flex flex-1 items-center justify-center">
-      <div className="flex flex-col items-center">
-        <Construction />
-        <h3 className="text-center">Work in progress</h3>
-      </div>
+    <div className="flex-1">
+      {keychains?.map((keychain) => <div key={keychain.id}>{keychain.name}</div>)}
     </div>
   )
 }
