@@ -34,7 +34,6 @@ export async function fetchHandler<T>(
     at_expiry = localStorage.getItem('at_expiry')
     // set the authorization header
     if (access_token) headers.set('Authorization', `Bearer ${access_token}`)
-    console.log(headers.get('Authorization'))
   }
 
   /**
