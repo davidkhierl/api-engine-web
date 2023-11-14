@@ -1,5 +1,5 @@
 import { Navigation } from '@/app/(authorized)/_components/layouts/navigation'
-import { ThemeModeToggle } from '@/components/theme-mode-toggle'
+import { ThemeModeToggle } from '@/components/theme/theme-mode-toggle'
 import { UserAvatar } from '@/components/user/user-avatar'
 import { cn } from '@/lib/utils/class-name'
 import { Waypoints } from 'lucide-react'

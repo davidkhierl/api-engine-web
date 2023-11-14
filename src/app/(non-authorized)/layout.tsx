@@ -1,4 +1,4 @@
-import { ThemeModeToggle } from '@/components/theme-mode-toggle'
+import { ThemeModeToggle } from '@/components/theme/theme-mode-toggle'
 import { Waypoints } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'

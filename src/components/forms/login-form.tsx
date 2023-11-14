@@ -11,7 +11,8 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { apiEngine } from '@/services/api-engine'
+import { login } from '@/lib/auth/login'
+import { setFormErrors } from '@/lib/utils/set-form-errors'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -25,7 +26,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 export function LoginForm() {
-  const { push } = useRouter()
+  const { push, prefetch } = useRouter()
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: { email: '', password: '' },
@@ -33,13 +34,23 @@ export function LoginForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      await apiEngine.login(values)
+      const auth = await login(values)
+      localStorage.setItem('access_token', auth.access_token)
+      localStorage.setItem('at_expiry', auth.at_expiry.toString())
+
       /**
+       * On production build has some issue pushing to new route on initial load,
+       * it basically won't work because the middleware will redirect it back to login
+       * since tokens are not yet set.
+       * To fix this we need to trigger a prefetch before pushing to a new route.
+       * This sets the token and middleware will allow us to navigate to the protected route.
+       *
        * TODO: add redirect from redirect query param
        */
+      prefetch('/')
       push('/')
     } catch (error) {
-      apiEngine.setFormErrors(form.setError, error)
+      setFormErrors(form.setError, error)
     }
   }
 

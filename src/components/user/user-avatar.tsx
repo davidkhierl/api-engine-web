@@ -1,4 +1,4 @@
-import { LogoutButton } from '@/components/logout-button'
+import { LogoutButton } from '@/components/auth/logout-button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -10,19 +10,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { UserAvatarFallbackComponent } from '@/components/user/user-avatar-fallback-component'
+import { getCurrentUser } from '@/lib/api/get-current-user'
 import { cn } from '@/lib/utils/class-name'
 import { getNameInitials } from '@/lib/utils/get-name-initials'
-import { apiEngine } from '@/services/api-engine'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 import { Frown, LogOut, User } from 'lucide-react'
 import Link from 'next/link'
 import * as React from 'react'
+import { ErrorBoundary } from 'react-error-boundary'
 
 export interface UserAvatarProps
   extends React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root> {}
 
-async function UserAvatar({ className }: { className?: string }) {
-  const user = await apiEngine.getAuthenticatedUser()
+async function UserAvatarFn({ className }: { className?: string }) {
+  const user = await getCurrentUser()
 
   if (!user)
     return (
@@ -67,7 +69,6 @@ async function UserAvatar({ className }: { className?: string }) {
               {/*<Image src={user.avatarUrl} alt={name} width={40} height={40} priority />*/}
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
-
             <span>{name}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
@@ -89,6 +90,14 @@ async function UserAvatar({ className }: { className?: string }) {
         </DropdownMenuContent>
       </DropdownMenuPortal>
     </DropdownMenu>
+  )
+}
+
+function UserAvatar() {
+  return (
+    <ErrorBoundary FallbackComponent={UserAvatarFallbackComponent}>
+      <UserAvatarFn />
+    </ErrorBoundary>
   )
 }
 

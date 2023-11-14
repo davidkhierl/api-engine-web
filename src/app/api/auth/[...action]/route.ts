@@ -1,5 +1,6 @@
 import { ApiEngineEndpoints } from '@/lib/api-engine/api-engine-endpoints'
 import { AuthResponse } from '@/lib/api-engine/api.types'
+import { setAuthCookies } from '@/lib/auth/set-auth-cookies'
 import { camelCase } from 'lodash-es'
 import { cookies } from 'next/headers'
 import { NextRequest } from 'next/server'
@@ -12,7 +13,7 @@ const loginFormDataSchema = z.object({
 
 const registerFormDataSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8, { message: 'password must be at least 8 characters' }),
+  password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
 })
 
 export async function POST(request: NextRequest, { params }: { params: { action: string } }) {
@@ -49,7 +50,7 @@ export async function POST(request: NextRequest, { params }: { params: { action:
         if (res.ok) {
           const auth = (await res.json()) as AuthResponse
 
-          setAuthTokens(auth.access_token, auth.at_expiry)
+          setAuthCookies(auth.access_token, auth.at_expiry)
 
           return Response.json(auth, {
             status: res.status,
@@ -111,7 +112,7 @@ export async function POST(request: NextRequest, { params }: { params: { action:
 
         if (res.ok) {
           const auth = (await res.json()) as AuthResponse
-          setAuthTokens(auth.access_token, auth.at_expiry)
+          setAuthCookies(auth.access_token, auth.at_expiry)
 
           return Response.json(auth, {
             status: res.status,
@@ -141,6 +142,16 @@ export async function POST(request: NextRequest, { params }: { params: { action:
 
 export async function GET(request: NextRequest, { params }: { params: { action: string } }) {
   switch (params.action[0]) {
+    case 'user': {
+      return await fetch(ApiEngineEndpoints.CURRENT_USER, {
+        method: 'get',
+        headers: request.headers,
+        credentials: 'include',
+        next: {
+          tags: ['user'],
+        },
+      })
+    }
     case 'refresh': {
       const access_token = request.cookies.get('access_token')?.value
       const at_expiry = request.cookies.get('at_expiry')?.value
@@ -156,10 +167,4 @@ export async function GET(request: NextRequest, { params }: { params: { action: 
       )
     }
   }
-}
-
-function setAuthTokens(access_token: string, at_expiry: number) {
-  const maxAge = 3 * 30 * 24 * 60 * 60 // 120d
-  cookies().set('access_token', access_token, { httpOnly: true, maxAge })
-  cookies().set('at_expiry', at_expiry.toString(), { httpOnly: true, maxAge })
 }

@@ -11,7 +11,8 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
-import { apiEngine } from '@/services/api-engine'
+import { registerUser } from '@/lib/auth/register-user'
+import { setFormErrors } from '@/lib/utils/set-form-errors'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -34,10 +35,10 @@ export function RegisterUserForm() {
 
   async function onSubmit(values: FormValues) {
     try {
-      await apiEngine.registerUser(values)
+      await registerUser(values)
       push('/')
     } catch (error) {
-      apiEngine.setFormErrors(form.setError, error)
+      setFormErrors(form.setError, error)
     }
   }
 

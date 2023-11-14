@@ -34,11 +34,9 @@ export class ApiEngineError extends Error {
 
   getConstraints() {
     if (!this.errors) return
-    return this.errors.map((error) => {
-      return {
-        property: error.property,
-        message: Object.values(error.constraints)[0],
-      }
-    })
+    return this.errors.map((error) => ({
+      property: error.property,
+      message: Object.values(error.constraints)[0],
+    }))
   }
 }

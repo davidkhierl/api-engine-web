@@ -62,6 +62,9 @@ dependencies:
   react-dom:
     specifier: ^18
     version: 18.2.0(react@18.2.0)
+  react-error-boundary:
+    specifier: ^4.0.11
+    version: 4.0.11(react@18.2.0)
   react-hook-form:
     specifier: ^7.48.2
     version: 7.48.2(react@18.2.0)
@@ -113,14 +116,14 @@ devDependencies:
     specifier: ^8
     version: 8.4.31
   prettier:
-    specifier: ^3.0.3
-    version: 3.0.3
+    specifier: ^3.1.0
+    version: 3.1.0
   prettier-plugin-organize-imports:
     specifier: ^3.2.4
-    version: 3.2.4(prettier@3.0.3)(typescript@5.2.2)
+    version: 3.2.4(prettier@3.1.0)(typescript@5.2.2)
   prettier-plugin-tailwindcss:
     specifier: ^0.5.7
-    version: 0.5.7(prettier-plugin-organize-imports@3.2.4)(prettier@3.0.3)
+    version: 0.5.7(prettier-plugin-organize-imports@3.2.4)(prettier@3.1.0)
   tailwindcss:
     specifier: ^3.3.5
     version: 3.3.5
@@ -3219,7 +3222,7 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: true
 
-  /prettier-plugin-organize-imports@3.2.4(prettier@3.0.3)(typescript@5.2.2):
+  /prettier-plugin-organize-imports@3.2.4(prettier@3.1.0)(typescript@5.2.2):
     resolution: {integrity: sha512-6m8WBhIp0dfwu0SkgfOxJqh+HpdyfqSSLfKKRZSFbDuEQXDDndb8fTpRWkUrX/uBenkex3MgnVk0J3b3Y5byog==}
     peerDependencies:
       '@volar/vue-language-plugin-pug': ^1.0.4
@@ -3232,11 +3235,11 @@ packages:
       '@volar/vue-typescript':
         optional: true
     dependencies:
-      prettier: 3.0.3
+      prettier: 3.1.0
       typescript: 5.2.2
     dev: true
 
-  /prettier-plugin-tailwindcss@0.5.7(prettier-plugin-organize-imports@3.2.4)(prettier@3.0.3):
+  /prettier-plugin-tailwindcss@0.5.7(prettier-plugin-organize-imports@3.2.4)(prettier@3.1.0):
     resolution: {integrity: sha512-4v6uESAgwCni6YF6DwJlRaDjg9Z+al5zM4JfngcazMy4WEf/XkPS5TEQjbD+DZ5iNuG6RrKQLa/HuX2SYzC3kQ==}
     engines: {node: '>=14.21.3'}
     peerDependencies:
@@ -3288,12 +3291,12 @@ packages:
       prettier-plugin-twig-melody:
         optional: true
     dependencies:
-      prettier: 3.0.3
-      prettier-plugin-organize-imports: 3.2.4(prettier@3.0.3)(typescript@5.2.2)
+      prettier: 3.1.0
+      prettier-plugin-organize-imports: 3.2.4(prettier@3.1.0)(typescript@5.2.2)
     dev: true
 
-  /prettier@3.0.3:
-    resolution: {integrity: sha512-L/4pUDMxcNa8R/EthV08Zt42WBO4h1rarVtK0K+QJG0X187OLo7l699jWw0GKuwzkPQ//jMFA/8Xm6Fh3J/DAg==}
+  /prettier@3.1.0:
+    resolution: {integrity: sha512-TQLvXjq5IAibjh8EpBIkNKxO749UEWABoiIZehEPiY4GNpVdhaFKqSTu+QrlU6D2dPAfubRmtJTi4K4YkQ5eXw==}
     engines: {node: '>=14'}
     hasBin: true
     dev: true
@@ -3347,6 +3350,15 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-error-boundary@4.0.11(react@18.2.0):
+    resolution: {integrity: sha512-U13ul67aP5DOSPNSCWQ/eO0AQEYzEFkVljULQIjMV0KlffTAhxuDoBKdO0pb/JZ8mDhMKFZ9NZi0BmLGUiNphw==}
+    peerDependencies:
+      react: '>=16.13.1'
+    dependencies:
+      '@babel/runtime': 7.23.2
+      react: 18.2.0
     dev: false
 
   /react-hook-form@7.48.2(react@18.2.0):

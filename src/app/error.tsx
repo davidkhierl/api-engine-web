@@ -17,7 +17,8 @@ export default function RootError({
 
   return (
     <main className="flex h-full w-full flex-col items-center justify-center gap-2">
-      <h2>Something went wrong! Root Error</h2>
+      <h2>Something went wrong!</h2>
+      <p className="font-bold text-red-500">{error.message}</p>
       <Button
         onClick={
           // Attempt to recover by trying to re-render the segment
@@ -25,6 +26,7 @@ export default function RootError({
         }>
         Try again
       </Button>
+      <code className="rounded-md bg-slate-300 px-1 text-sm">{`<RootError/>`}</code>
     </main>
   )
 }

@@ -1,4 +1,4 @@
-export default function NotFound() {
+export default function KeychainNotFound() {
   return (
     <div>
       <h2>Not Found</h2>

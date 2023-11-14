@@ -11,8 +11,9 @@ import {
   FormMessage,
   FormServerErrorMessage,
 } from '@/components/ui/form'
+import { createKeychain } from '@/lib/api/create-keychain'
 import { cn } from '@/lib/utils/class-name'
-import { apiEngine } from '@/services/api-engine'
+import { setFormErrors } from '@/lib/utils/set-form-errors'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -22,6 +23,7 @@ export interface KeychainFormProps {
   className?: string
   defaultValues?: FormValues
   buttonClassName?: string
+  onSuccess?: (formValues: FormValues) => void
 }
 
 const formSchema = z.object({
@@ -31,7 +33,12 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>
 
-export function KeychainForm({ className, defaultValues, buttonClassName }: KeychainFormProps) {
+export function KeychainForm({
+  className,
+  defaultValues,
+  buttonClassName,
+  onSuccess,
+}: KeychainFormProps) {
   const router = useRouter()
 
   const form = useForm<FormValues>({
@@ -44,16 +51,24 @@ export function KeychainForm({ className, defaultValues, buttonClassName }: Keyc
 
   async function onSubmit(values: FormValues) {
     try {
-      await apiEngine.createKeychain(values)
-      router.push('/keychains')
+      await createKeychain(values)
+      router.refresh()
+      if (onSuccess) onSuccess(values)
     } catch (error) {
-      apiEngine.setFormErrors(form.setError, error)
+      setFormErrors(form.setError, error)
     }
   }
 
   return (
     <Form {...form}>
-      <form className={cn('space-y-4', className)} onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className={cn('space-y-4', className)}
+        // action={async (formData) => {
+        //   const valid = await form.trigger()
+        //   if (!valid) return
+        //   return createKeychain(formData)
+        // }}
+        onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           name="name"
           control={form.control}
