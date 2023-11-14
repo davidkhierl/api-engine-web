@@ -13,7 +13,7 @@ export interface IconButtonProps
 }
 
 const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
-  ({ children, className, variant, size, asChild = false, label, ...props }, ref) => {
+  ({ children, className, variant, size = 'icon', asChild = false, label, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button'
     return (
       <Comp
