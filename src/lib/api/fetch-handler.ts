@@ -1,4 +1,5 @@
 import { AuthRefreshResponse } from '@/lib/api-engine/api.types'
+import { getAuthHeaders } from '@/lib/auth/get-auth-headers'
 import { getBaseUrl } from '@/lib/utils/get-base-url'
 import { isAccessTokenExpired } from '@/lib/utils/is-access-token-expired'
 import { isServer } from '@/lib/utils/is-server'
@@ -24,16 +25,16 @@ export async function fetchHandler<T>(
    * from the request cookie or from localstorage in client side
    */
   if (isServer) {
-    const { headers: nextHeaders } = await import('next/headers')
-    const cookie = nextHeaders().get('cookie')
-    if (cookie) headers.append('cookie', cookie)
-
-    const { cookies } = await import('next/headers')
-    access_token = cookies().get('access_token')?.value
-    at_expiry = cookies().get('at_expiry')?.value
+    const { headers: authHeaders, accessToken, accessTokenExpiry } = await getAuthHeaders()
+    headers = authHeaders
+    access_token = accessToken
+    at_expiry = accessTokenExpiry
   } else {
     access_token = localStorage.getItem('access_token')
     at_expiry = localStorage.getItem('at_expiry')
+    // set the authorization header
+    if (access_token) headers.set('Authorization', `Bearer ${access_token}`)
+    console.log(headers.get('Authorization'))
   }
 
   /**
@@ -41,9 +42,6 @@ export async function fetchHandler<T>(
    * although this is already being handled in middleware.ts
    */
   if (!access_token) redirect('/login')
-
-  // set the authorization header
-  headers.set('Authorization', `Bearer ${access_token}`)
 
   if (at_expiry && isAccessTokenExpired(at_expiry)) {
     const res = await fetch(`${getBaseUrl()}/api/auth/refresh`, {
