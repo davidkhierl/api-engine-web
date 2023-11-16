@@ -1,7 +1,13 @@
 import { RegisterUserForm } from '@/components/forms/register-user-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Register',
+  description: 'Register to API Engine',
+}
 
 export default function RegisterPage() {
   return (

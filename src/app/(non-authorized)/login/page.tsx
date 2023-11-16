@@ -1,7 +1,13 @@
 import { LoginForm } from '@/components/forms/login-form'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Login',
+  description: 'Login to API Engine',
+}
 
 export default function LoginPage() {
   return (
