@@ -1,26 +1,35 @@
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
-import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription, AlertTitle, AlertVariant } from '@/components/ui/alert'
 import { getEncryption } from '@/lib/api/get-encryption'
 import { Info } from 'lucide-react'
-import Link from 'next/link'
+import * as React from 'react'
 
-async function EncryptionAlert({ className }: { className?: string }) {
+export interface EncryptionAlertProps {
+  children?: React.ReactNode
+  className?: string
+  title?: string
+  description?: string
+  variant?: AlertVariant['variant']
+  icon?: React.ReactNode
+}
+
+async function EncryptionAlert({
+  children,
+  className,
+  icon,
+  title = 'Setup encryption key',
+  description = 'Before you can create a key you must first create an encryption key',
+  variant = 'warning',
+}: EncryptionAlertProps) {
   try {
     await getEncryption()
     return null
   } catch {
     return (
-      <Alert className={className} variant="warning">
-        <Info className="h-4 w-4" />
-        <AlertTitle>Setup encryption key</AlertTitle>
-        <AlertDescription>
-          Before you can create a key you must first create an encryption key
-        </AlertDescription>
-        <div className="mt-2">
-          <Button size="sm" variant="warning" asChild>
-            <Link href="/settings/encryption">Setup Encryption</Link>
-          </Button>
-        </div>
+      <Alert className={className} variant={variant}>
+        {icon ?? <Info className="h-4 w-4" />}
+        <AlertTitle>{title}</AlertTitle>
+        <AlertDescription>{description}</AlertDescription>
+        {children}
       </Alert>
     )
   }
