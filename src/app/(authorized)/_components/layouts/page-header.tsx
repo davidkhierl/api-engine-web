@@ -10,10 +10,7 @@ export const PageHeader = forwardRef<HTMLElement, PageHeaderProps & HTMLAttribut
     return (
       <header
         ref={ref}
-        className={cn(
-          'border-b border-slate-300 bg-slate-50 dark:border-slate-800 dark:bg-slate-950',
-          className
-        )}
+        className={cn('border-b border-slate-300 dark:border-slate-800', className)}
         {...props}>
         <div className="container flex max-w-screen-2xl flex-col items-stretch">
           <div className="my-10 flex justify-between gap-10">

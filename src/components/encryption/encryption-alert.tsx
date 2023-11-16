@@ -18,7 +18,7 @@ async function EncryptionAlert({ className }: { className?: string }) {
         </AlertDescription>
         <div className="mt-2">
           <Button size="sm" variant="warning" asChild>
-            <Link href="/settings#encryption">Setup Encryption</Link>
+            <Link href="/settings/encryption">Setup Encryption</Link>
           </Button>
         </div>
       </Alert>

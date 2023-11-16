@@ -8,7 +8,7 @@ import { Home, KeyRound, Settings } from 'lucide-react'
 
 export function Navigation({ className }: { className?: string }) {
   return (
-    <NavigationMenu>
+    <NavigationMenu className={className}>
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavLink href="/" icon={<Home className="h-4 w-4" />}>
@@ -21,7 +21,7 @@ export function Navigation({ className }: { className?: string }) {
           </NavLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavLink href="/settings" icon={<Settings className="h-4 w-4" />}>
+          <NavLink href="/settings" icon={<Settings className="h-4 w-4" />} catchAllSegments>
             Settings
           </NavLink>
         </NavigationMenuItem>

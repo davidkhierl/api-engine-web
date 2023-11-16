@@ -74,7 +74,7 @@ async function UserAvatarFn({ className }: { className?: string }) {
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem asChild>
-              <Link href="/account" className="inline-flex w-full gap-2">
+              <Link href="/settings/account" className="inline-flex w-full gap-2">
                 <User className="h-4 w-4" />
                 Account
               </Link>
