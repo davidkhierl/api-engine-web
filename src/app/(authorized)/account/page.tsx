@@ -1,15 +1,5 @@
-import { Construction } from 'lucide-react'
+import { WorkInProgress } from '@/app/(authorized)/_components/layouts/work-in-progress'
 
 export default function AccountPage() {
-  return (
-    <div className="flex h-full flex-col gap-4">
-      <h1 className="text-4xl font-bold">Account</h1>
-      <div className="flex flex-1 items-center justify-center">
-        <div className="flex flex-col items-center">
-          <Construction />
-          <h3 className="text-center">Work in progress</h3>
-        </div>
-      </div>
-    </div>
-  )
+  return <WorkInProgress />
 }

@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils/class-name'
 import { Waypoints } from 'lucide-react'
 import Link from 'next/link'
 
-export function Header({ className }: { className?: string }) {
+export function TopBar({ className }: { className?: string }) {
   return (
-    <header className={cn('border-b border-slate-300 px-6 pb-4 dark:border-slate-800', className)}>
+    <div className={cn('border-b border-slate-300 px-6 pb-4 dark:border-slate-800', className)}>
       <div className="flex h-16 items-center justify-between gap-4">
         <Link
           href="/"
@@ -23,6 +23,6 @@ export function Header({ className }: { className?: string }) {
       <div>
         <Navigation />
       </div>
-    </header>
+    </div>
   )
 }

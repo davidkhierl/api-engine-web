@@ -71,10 +71,10 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.next({
       request,
     })
-
+    const maxAge = 3 * 30 * 24 * 60 * 60 // 120d
     // update the response cookie
-    response.cookies.set('access_token', tokens.access_token)
-    response.cookies.set('at_expiry', tokens.at_expiry.toString())
+    response.cookies.set('access_token', tokens.access_token, { httpOnly: true, maxAge })
+    response.cookies.set('at_expiry', tokens.at_expiry.toString(), { httpOnly: true, maxAge })
     const newSid = res.headers.get('Set-Cookie')
     if (newSid) {
       response.headers.append('Set-Cookie', newSid)

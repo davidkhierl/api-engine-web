@@ -6,6 +6,7 @@ enum ApiEngineBaseEndpoints {
   USERS = 'users',
   CURRENT_USER = ApiEngineBaseEndpoints.USERS + '/me',
   KEYCHAINS = 'keychains',
+  ENCRYPTION = 'encryption',
 }
 
 export class ApiEngineEndpoints {
@@ -26,6 +27,9 @@ export class ApiEngineEndpoints {
   }`
   public static readonly KEYCHAINS = `${ApiEngineEndpoints.getBaseUrl()}/${
     ApiEngineBaseEndpoints.KEYCHAINS
+  }`
+  public static readonly ENCRYPTION = `${ApiEngineEndpoints.getBaseUrl()}/${
+    ApiEngineBaseEndpoints.ENCRYPTION
   }`
 
   public static getBaseUrl() {

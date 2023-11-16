@@ -46,3 +46,7 @@ export interface Keychain extends BaseEntity {
 }
 
 export type CreateKeychainInputs = Pick<Keychain, 'name' | 'description'>
+
+export interface Encryption extends BaseEntity {
+  long?: string
+}

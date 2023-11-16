@@ -14,6 +14,7 @@ export interface NavLinkProps extends LinkProps, HTMLAttributes<HTMLAnchorElemen
 const NavLink = React.forwardRef<HTMLAnchorElement, NavLinkProps>(
   ({ children, className, href, icon, ...props }, ref) => {
     const pathname = usePathname()
+
     const isActive = pathname === href
     return (
       <Link ref={ref} href={href} passHref legacyBehavior {...props}>

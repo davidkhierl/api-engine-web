@@ -1,3 +1,3 @@
 export default function AccountLoading() {
-  return <div>Loading keychains please wait...</div>
+  return <div>Loading account please wait...</div>
 }
