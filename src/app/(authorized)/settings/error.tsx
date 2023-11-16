@@ -2,12 +2,12 @@
 
 import { ErrorDisplay } from '@/components/ui/error-display'
 
-export default function RootError({
+export default function SettingsError({
   error,
   reset,
 }: {
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  return <ErrorDisplay error={error} errorRoot="Root" reset={reset} />
+  return <ErrorDisplay error={error} errorRoot="Settings" reset={reset} />
 }
