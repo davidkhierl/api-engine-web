@@ -33,8 +33,9 @@ export enum Role {
 }
 
 export interface User extends BaseEntity {
-  displayName?: string
   email: string
+  displayName?: string
+  avatarUrl: string
   role: Role
 }
 
@@ -42,4 +43,10 @@ export interface Keychain extends BaseEntity {
   name: string
   description?: string
   user_id: string
+}
+
+export type CreateKeychainInputs = Pick<Keychain, 'name' | 'description'>
+
+export interface Encryption extends BaseEntity {
+  long?: string
 }
