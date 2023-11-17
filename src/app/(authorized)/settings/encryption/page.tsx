@@ -1,5 +1,6 @@
 import { CreateEncryptionTrigger } from '@/components/encryption/create-encryption-trigger'
 import { EncryptionAlert } from '@/components/encryption/encryption-alert'
+import { EncryptionCard } from '@/components/encryption/encryption-card'
 import { Encryption } from '@/lib/api-engine/api.types'
 import { getEncryption } from '@/lib/api/get-encryption'
 import { FileKey2 } from 'lucide-react'
@@ -28,6 +29,7 @@ export default async function EncryptionSettingsPage() {
           </CreateEncryptionTrigger>
         </div>
       </EncryptionAlert>
+      {encryption && <EncryptionCard encryption={encryption} />}
     </section>
   )
 }
