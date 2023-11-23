@@ -1,6 +1,6 @@
 'use client'
 
-import { KeychainForm } from '@/components/forms/keychain-form'
+import { CreateKeyForm } from '@/components/forms/create-key-form'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -11,24 +11,31 @@ import {
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils/class-name'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
+import * as React from 'react'
 
-export function CreateKeychainDialog({ className }: { className?: string }) {
-  const [open, setOpen] = useState(false)
+export interface CreateKeyDialogProps {
+  className?: string
+  keychainId: string
+}
+
+function CreateKeyDialog({ className, keychainId }: CreateKeyDialogProps) {
+  const [open, setOpen] = React.useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm" icon={<Plus className={cn('h-4 w-4', className)} />}>
-          Create New Keychain
+          Create New Key
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Create new keychain</DialogTitle>
+          <DialogTitle>Create new Key</DialogTitle>
         </DialogHeader>
-        <KeychainForm onSuccess={() => setOpen(false)} />
+        <CreateKeyForm keychainId={keychainId} onSuccess={() => setOpen(false)} />
       </DialogContent>
     </Dialog>
   )
 }
+
+export { CreateKeyDialog }

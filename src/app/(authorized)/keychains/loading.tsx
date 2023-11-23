@@ -1,6 +1,6 @@
 import { MainContent } from '@/app/(authorized)/_components/layouts/main-content'
 import { PageHeader } from '@/app/(authorized)/_components/layouts/page-header'
-import { CreateKeychainDialog } from '@/app/(authorized)/keychains/_components/create-keychain-dialog'
+import { CreateKeychainDialog } from '@/components/keychain/create-keychain-dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 
 export default function KeychainsLoading() {

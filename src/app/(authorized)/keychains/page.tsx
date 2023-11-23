@@ -1,11 +1,11 @@
 import { MainContent } from '@/app/(authorized)/_components/layouts/main-content'
 import { PageHeader } from '@/app/(authorized)/_components/layouts/page-header'
-import { CreateKeychainDialog } from '@/app/(authorized)/keychains/_components/create-keychain-dialog'
+import { CreateKeychainDialog } from '@/components/keychain/create-keychain-dialog'
 import { KeychainCard } from '@/components/keychain/keychain-card'
-import { findAllKeychain } from '@/lib/api/find-all-keychain'
+import { findAllKeychains } from '@/lib/api/find-all-keychains'
 
 export default async function KeychainsPage() {
-  const keychains = await findAllKeychain()
+  const keychains = await findAllKeychains()
   return (
     <>
       <PageHeader title="Keychains">

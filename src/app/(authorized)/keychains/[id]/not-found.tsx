@@ -1,8 +1,14 @@
+import { MainContent } from '@/app/(authorized)/_components/layouts/main-content'
+import { PageHeader } from '@/app/(authorized)/_components/layouts/page-header'
+import { NotFoundDisplay } from '@/components/ui/not-found-display'
+
 export default function KeychainNotFound() {
   return (
-    <div>
-      <h2>Not Found</h2>
-      <p>Could not find requested resource</p>
-    </div>
+    <>
+      <PageHeader title="Keychain Not Found" />
+      <MainContent>
+        <NotFoundDisplay />
+      </MainContent>
+    </>
   )
 }
